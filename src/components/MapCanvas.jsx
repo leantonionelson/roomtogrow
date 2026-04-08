@@ -1,434 +1,332 @@
-import { useEffect } from "react";
 import RouteNode from "./RouteNode";
-import StoryPin from "./StoryPin";
-import { stories, programmes } from "../data/contentModel";
+import { getActivePathState, programmes, roles } from "../data/contentModel";
 
-const CARD_WIDTH = 200;
-const GAP = 12;
+// Layout configuration
+const X_BASE = 140;
+const X_STEP = 260; // Increased horizontal spread
+const Y_BASE = 100;
+const Y_STEP = 240; // Increased vertical spread
 
-const ROLE_LABEL_TO_ID = {
-  housekeeping: "frontline",
-  frontline: "frontline",
-  supervisor: "supervisor",
-  manager: "manager",
-  "senior manager": "senior_manager",
-  "general manager": "general_manager",
+const MAP_WIDTH = X_BASE + 4 * X_STEP + 140;
+const MAP_HEIGHT = Y_BASE + 2 * Y_STEP + 120;
+
+const nodePositions = {
+  // Roles (Bottom Layer: Y=2)
+  "frontline": { x: 0, y: 2 },
+  "supervisor": { x: 1, y: 2 },
+  "manager": { x: 2, y: 2 },
+  "senior_manager": { x: 3, y: 2 },
+  "general_manager": { x: 4, y: 2 },
+
+  // Core Learning/Transitional Leadership (Middle Layer: Y=1)
+  "journey_supervisor": { x: 0.5, y: 1 },
+  "journey_manager": { x: 1.5, y: 1 },
+  "journey_senior_manager": { x: 2.5, y: 1 },
+  "journey_gm": { x: 3.5, y: 1 },
+
+  // Value Add learning/Applied Leadership (Top Layer: Y=0)
+  "hospitality_diploma_3": { x: 1.5, y: 0 },
+  "hospitality_diploma_4": { x: 2.5, y: 0 },
+  "hospitality_diploma_5": { x: 3.5, y: 0 },
 };
 
-function pathDescriptionToRoleIds(pathDescription) {
-  const parts = pathDescription
-    .split(/\s*→\s*|\s+to\s+/i)
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-  const ids = [];
-  for (const part of parts) {
-    const id = ROLE_LABEL_TO_ID[part];
-    if (id) ids.push(id);
-  }
-  return ids;
-}
+const connectors = [
+  // Core progression connectors
+  { id: "frontline->journey_supervisor", fromId: "frontline", toId: "journey_supervisor", type: "core" },
+  { id: "journey_supervisor->supervisor", fromId: "journey_supervisor", toId: "supervisor", type: "core" },
+  { id: "supervisor->journey_manager", fromId: "supervisor", toId: "journey_manager", type: "core" },
+  { id: "journey_manager->manager", fromId: "journey_manager", toId: "manager", type: "core" },
+  { id: "manager->journey_senior_manager", fromId: "manager", toId: "journey_senior_manager", type: "core" },
+  { id: "journey_senior_manager->senior_manager", fromId: "journey_senior_manager", toId: "senior_manager", type: "core" },
+  { id: "senior_manager->journey_gm", fromId: "senior_manager", toId: "journey_gm", type: "core" },
+  { id: "journey_gm->general_manager", fromId: "journey_gm", toId: "general_manager", type: "core" },
 
-function getStoryTransitions(pathDescription) {
-  const roleIds = pathDescriptionToRoleIds(pathDescription);
-  const pairs = [];
-  for (let i = 0; i < roleIds.length - 1; i++) {
-    pairs.push([roleIds[i], roleIds[i + 1]]);
-  }
-  return pairs;
-}
+  // Acceleration connectors
+  { id: "supervisor->hospitality_diploma_3", fromId: "supervisor", toId: "hospitality_diploma_3", type: "acceleration" },
+  { id: "hospitality_diploma_3->manager", fromId: "hospitality_diploma_3", toId: "manager", type: "acceleration" },
+  { id: "manager->hospitality_diploma_4", fromId: "manager", toId: "hospitality_diploma_4", type: "acceleration" },
+  { id: "hospitality_diploma_4->senior_manager", fromId: "hospitality_diploma_4", toId: "senior_manager", type: "acceleration" },
+  { id: "senior_manager->hospitality_diploma_5", fromId: "senior_manager", toId: "hospitality_diploma_5", type: "acceleration" },
+  { id: "hospitality_diploma_5->general_manager", fromId: "hospitality_diploma_5", toId: "general_manager", type: "acceleration" },
 
-function getStoriesBySegment(steps, storiesList) {
-  const roleStepIndices = steps
-    .map((s, i) => (s.type === "role" ? i : -1))
-    .filter((i) => i >= 0);
-  const segmentToStory = new Map();
-  for (const story of storiesList) {
-    const transitions = getStoryTransitions(story.pathDescription);
-    for (let r = 0; r < roleStepIndices.length - 1; r++) {
-      const fromIdx = roleStepIndices[r];
-      const toIdx = roleStepIndices[r + 1];
-      const fromRoleId = steps[fromIdx].roleId;
-      const toRoleId = steps[toIdx].roleId;
-      const matches = transitions.some(
-        ([from, to]) => from === fromRoleId && to === toRoleId
-      );
-      if (matches && !segmentToStory.has(fromIdx)) {
-        segmentToStory.set(fromIdx, story);
-        break;
-      }
-    }
-  }
-  return segmentToStory;
-}
-
-function ProgrammeCard({ programme, onClick, isSelected }) {
-  const imgSrc = `https://placehold.co/400x200/e8e8e8/525252?text=${encodeURIComponent(programme.title)}`;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      data-programme-id={programme.id}
-      className={`flex min-w-[180px] max-w-[180px] flex-shrink-0 flex-col overflow-hidden rounded-lg border text-left shadow-sm transition-colors md:min-w-[200px] md:max-w-[200px] ${
-        isSelected
-          ? "border-gray-800 bg-gray-100 ring-2 ring-gray-800 ring-offset-2"
-          : "border-gray-300 bg-white hover:bg-gray-50"
-      }`}
-    >
-      <img
-        src={imgSrc}
-        alt=""
-        className="h-24 w-full object-cover md:h-28"
-      />
-      <div className="flex flex-1 flex-col p-3">
-        <span className="line-clamp-2 text-xs font-medium text-gray-800 md:text-sm">
-          {programme.title}
-        </span>
-      </div>
-    </button>
-  );
-}
+  // Fallback guidance connectors (subtle downward arrows)
+  { id: "journey_supervisor->frontline", fromId: "journey_supervisor", toId: "frontline", type: "fallback" },
+  { id: "journey_manager->supervisor", fromId: "journey_manager", toId: "supervisor", type: "fallback" },
+  { id: "journey_senior_manager->manager", fromId: "journey_senior_manager", toId: "manager", type: "fallback" },
+  { id: "journey_gm->senior_manager", fromId: "journey_gm", toId: "senior_manager", type: "fallback" },
+];
 
 export default function MapCanvas({
-  currentRoute,
+  userContext,
+  highlightedNodeIds = [],
   selectedNodeId,
   onSelectNode,
-  onSelectStory,
+  onShowOptions,
   onSelectProgramme,
   openDrawer,
   selectedPersonaId,
   onSelectPersona,
   PersonaQualifierComponent,
+  aiFocus,
 }) {
-  const selectedProgrammeIdFromNode =
-    selectedNodeId?.startsWith("programme_") ?
-      selectedNodeId.slice("programme_".length)
-    : null;
+  const isMapActive = userContext != null;
+  const pathState = getActivePathState(userContext);
+  const activeCoreConnectorIds = new Set(pathState.coreConnectorIds);
+  const activeAccelerationConnectorIds = new Set(pathState.accelerationConnectorIds);
+  const activeFallbackConnectorIds = new Set(pathState.fallbackConnectorIds);
+  const isAccelerationOn = Boolean(userContext?.acceleration);
+  const aiFocusNodeIds = new Set(aiFocus?.nodeIds ?? []);
+  const aiFocusConnectorIds = new Set(aiFocus?.connectorIds ?? []);
+  const hasAiFocus = aiFocusNodeIds.size > 0 || aiFocusConnectorIds.size > 0;
 
-  useEffect(() => {
-    if (!selectedProgrammeIdFromNode) return;
-    const card = document.querySelector(
-      `[data-programme-id="${selectedProgrammeIdFromNode}"]`
-    );
-    card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  }, [selectedProgrammeIdFromNode]);
-
-  const scrollCarousel = (dir) => {
-    const el = document.querySelector(".programme-explorer-carousel");
-    if (!el) return;
-    const step = (CARD_WIDTH + GAP) * (dir === "next" ? 1 : -1);
-    el.scrollBy({ left: step, behavior: "smooth" });
+  const getPx = (id) => {
+    const pos = nodePositions[id] || { x: 0, y: 0 };
+    return { x: X_BASE + pos.x * X_STEP, y: Y_BASE + pos.y * Y_STEP };
   };
 
-  if (!currentRoute?.steps?.length) {
-    return (
-      <div className="flex h-full min-h-[300px] flex-col bg-gray-100 md:min-h-full">
-        <div className="relative flex flex-1 flex-col items-center justify-center overflow-auto p-8">
-          {/* Empty state: ghost route spine and nodes */}
-          <div
-            className="absolute inset-0 flex items-center justify-center md:inset-x-6 md:inset-y-auto md:top-1/2 md:bottom-auto md:h-24 md:-translate-y-1/2"
-            aria-hidden
-          >
-            <div className="absolute left-1/2 top-16 bottom-24 w-0.5 -translate-x-1/2 rounded-full bg-gray-300 opacity-30 md:hidden" />
-            <svg
-              className="hidden h-full w-full md:block"
-              viewBox="0 0 400 100"
-              preserveAspectRatio="none"
-            >
-              <polyline
-                points="0,25 100,75 200,25 300,75 400,25"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity={0.3}
-              />
-            </svg>
-          </div>
-          <div className="absolute flex flex-col items-center gap-y-6 md:flex-row md:gap-x-8 md:gap-y-0 md:opacity-30" aria-hidden>
-            {["Start", "Next step", "Next step", "Destination"].map((label, i) => (
-              <div key={i} className="flex flex-col items-center gap-1">
-                <div className="h-5 w-5 shrink-0 rounded-full border-2 border-gray-400 bg-transparent" />
-                <span className="text-xs text-gray-500">{label}</span>
-              </div>
-            ))}
-          </div>
-          <div className="relative z-10 flex flex-col items-center justify-center">
-            {selectedPersonaId ? (
-              <p className="text-center text-gray-600">
-                Choose your current role and destination, then click Find Route.
-              </p>
-            ) : PersonaQualifierComponent ? (
-              <div className="w-full max-w-md">
-                <PersonaQualifierComponent
-                  selectedPersonaId={selectedPersonaId}
-                  onSelectPersona={onSelectPersona}
-                />
-              </div>
-            ) : (
-              <p className="text-center text-gray-600">
-                Choose your current role and destination, then click Find Route.
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="border-t border-gray-300 bg-gray-50 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-medium text-gray-700">
-              Programme Explorer
-            </h3>
-            <div className="flex gap-1">
-              <button
-                type="button"
-                onClick={() => scrollCarousel("prev")}
-                aria-label="Previous programmes"
-                className="rounded border border-gray-400 bg-white p-1.5 shadow-sm"
-              >
-                <span className="block h-0 w-0 border-y-[5px] border-y-transparent border-r-[6px] border-r-gray-700" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollCarousel("next")}
-                aria-label="Next programmes"
-                className="rounded border border-gray-400 bg-white p-1.5 shadow-sm"
-              >
-                <span className="block h-0 w-0 border-y-[5px] border-y-transparent border-l-[6px] border-l-gray-700" />
-              </button>
-            </div>
-          </div>
-          <div
-            className="programme-explorer-carousel mt-3 flex gap-3 overflow-x-auto scroll-smooth py-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {programmes.map((p) => (
-              <ProgrammeCard
-                key={p.id}
-                programme={p}
-                isSelected={selectedProgrammeIdFromNode === p.id}
-                onClick={() => {
-                  onSelectProgramme?.(p.id);
-                  openDrawer?.();
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const steps = currentRoute.steps;
-  const firstRoleId = steps.find((s) => s.type === "role")?.id;
-  const storyBySegment = getStoriesBySegment(steps, stories);
-  const roleStepIndices = steps
-    .map((s, i) => (s.type === "role" ? i : -1))
-    .filter((i) => i >= 0);
-
-  const gridBackground = {
-    backgroundImage: [
-      "repeating-linear-gradient(0deg, transparent, transparent 23px, #e5e7eb 23px, #e5e7eb 24px)",
-      "repeating-linear-gradient(90deg, transparent, transparent 23px, #e5e7eb 23px, #e5e7eb 24px)",
-    ].join(", "),
-  };
-
-  const selectedIndex = steps.findIndex((s) => s.id === selectedNodeId);
-  const currentIndex = steps.findIndex((s) => s.id === firstRoleId);
+  const allNodes = [
+    ...roles.map(r => ({ ...r, nodeType: 'role', label: r.label })),
+    ...programmes.map(p => ({ ...p, nodeType: 'programme', label: p.title }))
+  ];
 
   return (
     <div className="flex h-full min-h-[300px] flex-col bg-gray-100 md:min-h-full">
       <div
-        className="relative flex flex-1 flex-col items-center justify-center overflow-auto p-6"
-        style={gridBackground}
+        className="relative flex flex-1 flex-col overflow-auto bg-gray-100"
+        style={{
+          backgroundImage: [
+            "repeating-linear-gradient(0deg, transparent, transparent 23px, #e5e7eb 23px, #e5e7eb 24px)",
+            "repeating-linear-gradient(90deg, transparent, transparent 23px, #e5e7eb 23px, #e5e7eb 24px)",
+          ].join(", "),
+        }}
       >
-        {/* Path spine (behind nodes): desktop zig-zag, mobile vertical */}
-        <div
-          className="absolute inset-0 flex items-center justify-center md:inset-x-6 md:inset-y-auto md:top-1/2 md:bottom-auto md:h-24 md:-translate-y-1/2"
-          aria-hidden
-        >
-          {/* Mobile: vertical spine */}
-          <div className="absolute left-1/2 top-12 bottom-12 w-0.5 -translate-x-1/2 rounded-full bg-gray-300 opacity-60 md:hidden" />
-          {/* Desktop: zig-zag spine SVG */}
-          <svg
-            className="hidden h-full w-full md:block"
-            viewBox={`0 0 ${Math.max(100, (steps.length - 1) * 100)} 100`}
-            preserveAspectRatio="none"
-          >
-            <polyline
-              points={steps
-                .map((_, i) => [(i * 100), (i % 2) * 50 + 25].join(","))
-                .join(" ")}
-              fill="none"
-              stroke="#9ca3af"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={0.6}
-            />
-          </svg>
-        </div>
+        {!isMapActive && !selectedPersonaId && PersonaQualifierComponent && (
+          <div className="absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 justify-center p-6">
+            <div className="w-full max-w-md rounded-xl bg-white/95 p-6 shadow-xl backdrop-blur-sm">
+              <PersonaQualifierComponent
+                selectedPersonaId={selectedPersonaId}
+                onSelectPersona={onSelectPersona}
+              />
+            </div>
+          </div>
+        )}
 
-        <div className="relative z-0 flex flex-col items-center gap-y-4 md:flex-row md:items-center md:gap-x-12 md:gap-y-0">
-          {steps.map((step, index) => {
-            const segmentStory = step.type === "role" ? storyBySegment.get(index) : null;
-            const nextRoleIdx = roleStepIndices[roleStepIndices.indexOf(index) + 1];
-            const nextRoleStepId = nextRoleIdx != null ? steps[nextRoleIdx]?.id : null;
-            const isHighlight =
-              segmentStory &&
-              (selectedNodeId === step.id || selectedNodeId === nextRoleStepId);
-            const isSelected = step.id === selectedNodeId;
-            const isFuture = index > selectedIndex && index !== currentIndex;
-            const zigzagTranslate = index % 2 === 0 ? "md:translate-y-0" : "md:translate-y-12";
-            const isRole = step.type === "role";
-            const isDestination = index === steps.length - 1;
+        <div
+          className="relative mx-auto my-auto transition-opacity duration-500"
+          style={{ 
+            width: MAP_WIDTH, 
+            height: MAP_HEIGHT,
+            opacity: (!isMapActive && !selectedPersonaId) ? 0.3 : 1
+          }}
+        >
+          {/* Left axis labels */}
+          <div className="pointer-events-none absolute left-3 top-0 z-10 flex h-full w-32 flex-col justify-between py-16">
+            <div className="rounded-md border border-gray-200 bg-white/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 shadow-sm">
+              Value Add Learning
+            </div>
+            <div className="rounded-md border border-gray-200 bg-white/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 shadow-sm">
+              Core Learning
+            </div>
+            <div className="mt-2 rounded-md border border-gray-200 bg-white/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 shadow-sm">
+              Hotel Role
+            </div>
+          </div>
+
+          {/* Connectors (SVG rendering behind) */}
+          <svg className="absolute inset-0 h-full w-full pointer-events-none">
+            <defs>
+              <marker
+                id="arrowhead-dim"
+                markerWidth="8"
+                markerHeight="6"
+                refX="4"
+                refY="3"
+                orient="auto"
+              >
+                <polygon points="0 0, 8 3, 0 6" fill="#9ca3af" opacity="0.3" />
+              </marker>
+              <marker
+                id="arrowhead-relevant"
+                markerWidth="8"
+                markerHeight="6"
+                refX="4"
+                refY="3"
+                orient="auto"
+              >
+                <polygon points="0 0, 8 3, 0 6" fill="#6b7280" opacity="0.8" />
+              </marker>
+            </defs>
+            {connectors.map(({ id, fromId, toId, type }, i) => {
+              const p1 = getPx(fromId);
+              const p2 = getPx(toId);
+
+              const isCoreActive = type === "core" && activeCoreConnectorIds.has(id);
+              const isAccelerationActive =
+                type === "acceleration" &&
+                isAccelerationOn &&
+                activeAccelerationConnectorIds.has(id);
+              const isFallbackActive =
+                type === "fallback" &&
+                !isAccelerationOn &&
+                activeFallbackConnectorIds.has(id);
+              const isAiFocusConnector = aiFocusConnectorIds.has(id);
+
+              let stroke = "#9ca3af";
+              let strokeOpacity = !isMapActive ? 0.3 : 0.18;
+              let strokeWidth = 1.5;
+
+              if (isCoreActive) {
+                stroke = "#374151";
+                strokeOpacity = 0.9;
+                strokeWidth = 3;
+              } else if (isAccelerationActive) {
+                stroke = "#2563eb";
+                strokeOpacity = 0.72;
+                strokeWidth = 2.4;
+              } else if (isAiFocusConnector) {
+                stroke = "#1d4ed8";
+                strokeOpacity = 0.68;
+                strokeWidth = 2.5;
+              } else if (type === "fallback") {
+                stroke = "#9ca3af";
+                strokeOpacity = !isMapActive ? 0.2 : isAccelerationOn ? 0.05 : 0.2;
+                strokeWidth = 1.4;
+              }
+
+              // Quadratic bezier for soft curves
+              const midX = (p1.x + p2.x) / 2;
+              const midY = (p1.y + p2.y) / 2;
+              
+              const d = `M ${p1.x} ${p1.y} Q ${p1.x} ${midY} ${midX} ${midY} T ${p2.x} ${p2.y}`;
+
+              return (
+                <path
+                  key={i}
+                  d={d}
+                  fill="none"
+                  stroke={stroke}
+                  strokeWidth={strokeWidth}
+                  strokeLinecap="round"
+                  opacity={strokeOpacity}
+                  markerEnd={
+                    isCoreActive || isAccelerationActive || isFallbackActive || isAiFocusConnector
+                      ? "url(#arrowhead-relevant)"
+                      : "url(#arrowhead-dim)"
+                  }
+                  strokeDasharray={isCoreActive || isAccelerationActive || isAiFocusConnector ? "8 6" : "none"}
+                  className="transition-all duration-500"
+                >
+                  {(isCoreActive || isAccelerationActive || isAiFocusConnector) && (
+                    <animate
+                      attributeName="stroke-dashoffset"
+                      values={isCoreActive ? "14;0" : "10;0"}
+                      dur={isCoreActive ? "1.8s" : "2.2s"}
+                      repeatCount="indefinite"
+                    />
+                  )}
+                </path>
+              );
+            })}
+          </svg>
+
+          {/* Nodes */}
+          {allNodes.map(node => {
+            const pos = getPx(node.id);
+            if (!nodePositions[node.id]) return null;
+
+            const isSelected = selectedNodeId === node.id;
+            const isRelevant = highlightedNodeIds.includes(node.id);
+            const isCurrentRole = userContext?.currentRoleId === node.id;
+            const isDiplomaNode = node.id.startsWith("hospitality_diploma");
+            const isAiFocusNode = aiFocusNodeIds.has(node.id);
+            
+            // State derivation:
+            let nodeState = "future";
+            if (isSelected) nodeState = "selected";
+            else if (isCurrentRole) nodeState = "current";
+
+            // Determine opacity based on relevance
+            let nodeOpacity = !isMapActive ? "opacity-100" : (isRelevant || isSelected ? "opacity-100" : "opacity-40");
+            if (isMapActive && isDiplomaNode && !isAccelerationOn && !isSelected) {
+              nodeOpacity = "opacity-25";
+            }
+            if (hasAiFocus && isAiFocusNode) {
+              nodeOpacity = "opacity-100";
+            }
 
             return (
               <div
-                key={step.id}
-                className={`flex flex-col items-center gap-y-4 md:flex-row md:gap-y-0 md:gap-x-0 ${zigzagTranslate} ${isFuture ? "opacity-80" : ""} ${isSelected ? "z-10 md:relative" : "relative"}`}
+                key={node.id}
+                className={`group absolute flex flex-col items-center justify-center transition-all duration-300 ${nodeOpacity} ${isSelected ? "z-10" : "z-0"}`}
+                style={{
+                  left: pos.x,
+                  top: pos.y,
+                  transform: "translate(-50%, -50%)"
+                }}
               >
-                <div className="flex flex-col items-center md:flex-row">
-                  {/* Map stop container: light pill around node + label */}
-                  <div
-                    className={`flex flex-col items-center rounded-xl border px-3 py-2 md:px-4 md:py-2.5 ${
-                      isRole
-                        ? "scale-110 border-gray-400 bg-white/90 shadow-md"
-                        : "scale-95 border-gray-300 bg-white/80"
-                    } ${isDestination ? "ring-2 ring-gray-700/50" : ""} ${isSelected ? "shadow-lg" : ""}`}
-                  >
-                    <RouteNode
-                      type={step.type}
-                      label={step.label}
-                      nodeId={step.id}
-                      nodeState={
-                        step.id === selectedNodeId
-                          ? "selected"
-                          : step.id === firstRoleId && index === 0
-                            ? "current"
-                            : "future"
+                <div
+                  className={`flex flex-col items-center rounded-xl border px-3 py-2 bg-white/90 shadow-sm transition-all hover:scale-105 ${
+                    isSelected || isAiFocusNode ? "ring-2 ring-gray-700 shadow-md" : "border-gray-300"
+                  } ${
+                    isAiFocusNode ? "animate-pulse" : ""
+                  }`}
+                >
+                  <RouteNode
+                    type={node.nodeType}
+                    label={node.label}
+                    nodeId={node.id}
+                    nodeState={nodeState}
+                    isFirstRole={isCurrentRole}
+                    onClick={(id) => {
+                      onSelectNode(id);
+                      if (node.nodeType === 'programme' && onSelectProgramme) {
+                        onSelectProgramme(id);
                       }
-                      isFirstRole={
-                        step.type === "role" &&
-                        steps.findIndex((s) => s.type === "role") === index
-                      }
-                      stepNumber={index + 1}
-                      isDestination={isDestination}
-                      onClick={onSelectNode}
-                    />
-                  </div>
-
-                  {index < steps.length - 1 && (
-                    <>
-                      {/* Connector: curved on desktop, vertical on mobile */}
-                      <div className="flex flex-col items-center md:flex-row" aria-hidden>
-                        {/* Mobile: vertical line */}
-                        <div className="h-4 w-px shrink-0 bg-gray-400 md:hidden" />
-                        {/* Desktop: curved SVG connector */}
-                        <svg
-                          className="hidden h-12 w-20 shrink-0 md:block"
-                          viewBox="0 0 80 48"
-                          aria-hidden
-                        >
-                          <path
-                            d={
-                              index % 2 === 0
-                                ? "M 0 0 C 32 0, 48 48, 80 48"
-                                : "M 0 48 C 32 48, 48 0, 80 0"
-                            }
-                            fill="none"
-                            stroke="#9ca3af"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </div>
-
-                      {segmentStory && (
-                        <>
-                          <div className="flex flex-col items-center md:flex-row">
-                            <div className="h-3 w-px shrink-0 bg-gray-400 md:hidden" aria-hidden />
-                            <div className="flex flex-col items-center md:flex-row md:gap-x-2">
-                              {/* Short connector from path to story pin (desktop: horizontal branch) */}
-                              <div className="h-2 w-px bg-gray-400 md:h-0 md:w-4 md:border-t md:border-gray-400" aria-hidden />
-                              <StoryPin
-                                storyId={segmentStory.id}
-                                name={segmentStory.name}
-                                pathDescription={segmentStory.pathDescription}
-                                onClick={onSelectStory}
-                                isHighlight={!!isHighlight}
-                              />
-                              <div className="h-2 w-px bg-gray-400 md:hidden" aria-hidden />
-                            </div>
-                            <div className="h-3 w-px shrink-0 bg-gray-400 md:hidden" aria-hidden />
-                            {/* Connector after story pin */}
-                            <div className="h-4 w-px shrink-0 bg-gray-400 md:hidden" aria-hidden />
-                            <svg
-                              className="hidden h-12 w-20 shrink-0 md:block"
-                              viewBox="0 0 80 48"
-                              aria-hidden
+                      openDrawer?.();
+                    }}
+                  />
+                  {node.nodeType === "role" && node.id !== "general_manager" && (
+                    <div className="mt-2 flex w-full flex-col gap-2">
+                      {(() => {
+                        const isFrontlineRole = node.id === "frontline";
+                        const isRoleContext = userContext?.currentRoleId === node.id;
+                        const roleAcceleration = isRoleContext ? Boolean(userContext?.acceleration) : false;
+                        return (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => onShowOptions?.(node.id, roleAcceleration)}
+                              className="w-full rounded border border-gray-700 bg-gray-800 px-2 py-1 text-xs font-medium text-white hover:bg-gray-700"
                             >
-                              <path
-                                d={
-                                  index % 2 === 0
-                                    ? "M 0 0 C 32 0, 48 48, 80 48"
-                                    : "M 0 48 C 32 48, 48 0, 80 0"
-                                }
-                                fill="none"
-                                stroke="#9ca3af"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </div>
-                        </>
-                      )}
-                    </>
+                              Continue your journey
+                            </button>
+                            {!isFrontlineRole && (
+                              <>
+                                <label className="flex items-center justify-between rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700">
+                                  <span className="font-medium">Add accelerated learning</span>
+                                  <span className="relative inline-flex items-center">
+                                    <input
+                                      type="checkbox"
+                                      checked={roleAcceleration}
+                                      onChange={() => onShowOptions?.(node.id, !roleAcceleration)}
+                                      className="peer sr-only"
+                                    />
+                                    <span className="h-5 w-9 rounded-full bg-gray-300 transition-colors peer-checked:bg-blue-600" />
+                                    <span className="absolute left-0.5 h-4 w-4 rounded-full bg-white transition-transform peer-checked:translate-x-4" />
+                                  </span>
+                                </label>
+                                <p className="text-center text-[10px] text-gray-600">{roleAcceleration ? "Accelerated pace" : "Standard pace"}</p>
+                              </>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
                   )}
                 </div>
               </div>
             );
           })}
-        </div>
-      </div>
-
-      <div className="border-t border-gray-300 bg-gray-50 p-4">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-medium text-gray-700">
-            Programme Explorer
-          </h3>
-          <div className="flex gap-1">
-            <button
-              type="button"
-              onClick={() => scrollCarousel("prev")}
-              aria-label="Previous programmes"
-              className="rounded border border-gray-400 bg-white p-1.5 shadow-sm"
-            >
-              <span className="block h-0 w-0 border-y-[5px] border-y-transparent border-r-[6px] border-r-gray-700" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollCarousel("next")}
-              aria-label="Next programmes"
-              className="rounded border border-gray-400 bg-white p-1.5 shadow-sm"
-            >
-              <span className="block h-0 w-0 border-y-[5px] border-y-transparent border-l-[6px] border-l-gray-700" />
-            </button>
-          </div>
-        </div>
-        <div
-          className="programme-explorer-carousel mt-3 flex gap-3 overflow-x-auto scroll-smooth py-1"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {programmes.map((p) => (
-            <ProgrammeCard
-              key={p.id}
-              programme={p}
-              isSelected={selectedProgrammeIdFromNode === p.id}
-              onClick={() => {
-                onSelectProgramme?.(p.id);
-                openDrawer?.();
-              }}
-            />
-          ))}
         </div>
       </div>
     </div>

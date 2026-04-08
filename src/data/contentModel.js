@@ -39,8 +39,18 @@ export const intentSelector = {
  * Contextual sentences shown above the map when a route is displayed.
  */
 export const mapContextualSentences = {
-  selfGrowth: "Start where you are. See where you could go.",
-  developingTeam: "See how to help someone take their next step.",
+  defaultPath: "You move forward through experience. Learning strengthens how you move.",
+  accelerationPath: "You move forward through experience. Structured learning strengthens how you move.",
+};
+
+export const pathAiConfig = {
+  sectionTitle: "Ask about this path",
+  inputPlaceholder: "Ask how to move forward, what to expect, or where to focus",
+  quickPrompts: [
+    "What should I focus on first?",
+    "What slows people down here?",
+    "Am I ready?",
+  ],
 };
 
 export const sellingPoints = [
@@ -74,6 +84,7 @@ export const leaderActionSteps = [
 export const roles = [
   {
     id: "frontline",
+    level: 0,
     label: "Frontline colleague",
     overview:
       "Frontline colleagues deliver our guest experience every day—whether in rooms, food and beverage, or front desk. This is where many growth journeys start, with hands-on experience and pathways into supervision and beyond.",
@@ -83,6 +94,7 @@ export const roles = [
   },
   {
     id: "supervisor",
+    level: 1,
     label: "Supervisor",
     overview:
       "Supervisors lead a small team or shift, supporting day-to-day operations and developing their first leadership skills. It's the first step into people leadership and a bridge to management.",
@@ -92,6 +104,7 @@ export const roles = [
   },
   {
     id: "manager",
+    level: 2,
     label: "Manager",
     overview:
       "Managers lead a team or department, with responsibility for performance, development, and delivery. They balance operational excellence with people leadership and are key to developing the next generation of leaders.",
@@ -101,6 +114,7 @@ export const roles = [
   },
   {
     id: "senior_manager",
+    level: 3,
     label: "Senior Manager",
     overview:
       "Senior managers lead larger teams or multiple areas, often with broader business or regional responsibility. They shape strategy, drive change, and develop other managers—a critical step toward general management.",
@@ -110,6 +124,7 @@ export const roles = [
   },
   {
     id: "general_manager",
+    level: 4,
     label: "General Manager",
     overview:
       "General Managers lead the property and its performance end to end—guest experience, commercial results, and team culture. They are the face of the hotel and set the tone for growth and development on site.",
@@ -179,6 +194,8 @@ export const personaQualifyingQuestions = [
 export const programmes = [
   {
     id: "journey_supervisor",
+    type: "core",
+    levels: [0, 1],
     title: "Journey to Supervisor",
     whoItsFor: "Frontline colleagues ready to step into a first leadership role.",
     skillsDeveloped: "Delegation, team coordination, basic people management.",
@@ -188,6 +205,8 @@ export const programmes = [
   },
   {
     id: "journey_manager",
+    type: "core",
+    levels: [1, 2],
     title: "Journey to Manager",
     whoItsFor: "Supervisors aiming to become managers.",
     skillsDeveloped: "Performance management, planning, stakeholder communication.",
@@ -197,6 +216,8 @@ export const programmes = [
   },
   {
     id: "journey_senior_manager",
+    type: "core",
+    levels: [2, 3],
     title: "Journey to Senior Manager",
     whoItsFor: "Managers preparing for senior leadership.",
     skillsDeveloped: "Strategy, change management, leading managers.",
@@ -206,6 +227,8 @@ export const programmes = [
   },
   {
     id: "journey_gm",
+    type: "core",
+    levels: [3, 4],
     title: "Journey to General Manager",
     whoItsFor: "Senior managers ready for GM roles.",
     skillsDeveloped: "P&L, property leadership, commercial and people strategy.",
@@ -215,6 +238,8 @@ export const programmes = [
   },
   {
     id: "core_leadership",
+    type: "core",
+    levels: [1, 2, 3, 4],
     title: "Core Leadership Learning",
     whoItsFor: "Anyone in or moving into a people-leading role.",
     skillsDeveloped: "Core leadership essentials, feedback, coaching.",
@@ -224,6 +249,8 @@ export const programmes = [
   },
   {
     id: "leadership_diplomas",
+    type: "advanced",
+    levels: [2, 3, 4],
     title: "Leadership Diplomas",
     whoItsFor: "Managers and senior managers seeking formal recognition.",
     skillsDeveloped: "Leadership theory and practice at diploma level.",
@@ -233,7 +260,9 @@ export const programmes = [
   },
   {
     id: "hospitality_diploma_3",
-    title: "Hospitality Diploma Level 3",
+    type: "advanced",
+    levels: [0, 1],
+    title: "Foundational Diploma of Hospitality Leadership",
     whoItsFor: "Frontline and supervisory colleagues.",
     skillsDeveloped: "Hospitality operations, customer service, team support.",
     whatToExpect: "Industry-recognised qualification.",
@@ -242,7 +271,9 @@ export const programmes = [
   },
   {
     id: "hospitality_diploma_4",
-    title: "Hospitality Diploma Level 4",
+    type: "advanced",
+    levels: [1, 2],
+    title: "Diploma of Hospitality Leadership",
     whoItsFor: "Supervisors and managers.",
     skillsDeveloped: "Management and leadership in hospitality.",
     whatToExpect: "Higher-level operational and leadership skills.",
@@ -251,141 +282,14 @@ export const programmes = [
   },
   {
     id: "hospitality_diploma_5",
-    title: "Hospitality Diploma Level 5",
+    type: "advanced",
+    levels: [2, 3, 4],
+    title: "Advanced Diploma of Hospitality Leadership",
     whoItsFor: "Managers and senior managers.",
     skillsDeveloped: "Strategic and senior leadership in hospitality.",
     whatToExpect: "Strategic leadership qualification.",
     timeCommitment: "Flexible; typically 18–24 months.",
     nextStep: "Discuss with your GM or regional L&D.",
-  },
-];
-
-/**
- * Route steps: alternating role and optional programme.
- * Step: { type: 'role' | 'programme', roleId?, programmeId?, label }
- */
-function buildSteps(fromRoleId, toRoleId) {
-  const roleOrder = ["frontline", "supervisor", "manager", "senior_manager", "general_manager"];
-  const fromIdx = roleOrder.indexOf(fromRoleId);
-  const toIdx = roleOrder.indexOf(toRoleId);
-  if (fromIdx === -1 || toIdx === -1 || fromIdx >= toIdx) return [];
-
-  const steps = [];
-  const programmeMap = {
-    frontline_supervisor: "journey_supervisor",
-    supervisor_manager: "journey_manager",
-    manager_senior_manager: "journey_senior_manager",
-    senior_manager_general_manager: "journey_gm",
-  };
-  const roleLabels = Object.fromEntries(roles.map((r) => [r.id, r.label]));
-  const programmeTitles = Object.fromEntries(programmes.map((p) => [p.id, p.title]));
-
-  for (let i = fromIdx; i <= toIdx; i++) {
-    const roleId = roleOrder[i];
-    steps.push({
-      type: "role",
-      roleId,
-      programmeId: null,
-      id: `role_${roleId}`,
-      label: roleLabels[roleId] ?? roleId,
-    });
-    if (i < toIdx) {
-      const key = `${roleOrder[i]}_${roleOrder[i + 1]}`;
-      const programmeId = programmeMap[key] || null;
-      if (programmeId) {
-        steps.push({
-          type: "programme",
-          roleId: null,
-          programmeId,
-          id: `programme_${programmeId}`,
-          label: programmeTitles[programmeId] ?? programmeId,
-        });
-      }
-    }
-  }
-  return steps;
-}
-
-export const routes = [
-  {
-    id: "r1",
-    fromRoleId: "frontline",
-    toRoleId: "supervisor",
-    steps: buildSteps("frontline", "supervisor"),
-    estimatedSteps: 2,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r2",
-    fromRoleId: "frontline",
-    toRoleId: "manager",
-    steps: buildSteps("frontline", "manager"),
-    estimatedSteps: 4,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r3",
-    fromRoleId: "frontline",
-    toRoleId: "senior_manager",
-    steps: buildSteps("frontline", "senior_manager"),
-    estimatedSteps: 6,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r4",
-    fromRoleId: "frontline",
-    toRoleId: "general_manager",
-    steps: buildSteps("frontline", "general_manager"),
-    estimatedSteps: 8,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r5",
-    fromRoleId: "supervisor",
-    toRoleId: "manager",
-    steps: buildSteps("supervisor", "manager"),
-    estimatedSteps: 2,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r6",
-    fromRoleId: "supervisor",
-    toRoleId: "senior_manager",
-    steps: buildSteps("supervisor", "senior_manager"),
-    estimatedSteps: 4,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r7",
-    fromRoleId: "supervisor",
-    toRoleId: "general_manager",
-    steps: buildSteps("supervisor", "general_manager"),
-    estimatedSteps: 6,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r8",
-    fromRoleId: "manager",
-    toRoleId: "senior_manager",
-    steps: buildSteps("manager", "senior_manager"),
-    estimatedSteps: 2,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r9",
-    fromRoleId: "manager",
-    toRoleId: "general_manager",
-    steps: buildSteps("manager", "general_manager"),
-    estimatedSteps: 4,
-    timeStyle: "flexible",
-  },
-  {
-    id: "r10",
-    fromRoleId: "senior_manager",
-    toRoleId: "general_manager",
-    steps: buildSteps("senior_manager", "general_manager"),
-    estimatedSteps: 2,
-    timeStyle: "flexible",
   },
 ];
 
@@ -406,12 +310,25 @@ export const stories = [
   },
 ];
 
+const coreJourneyByRoleId = {
+  frontline: "journey_supervisor",
+  supervisor: "journey_manager",
+  manager: "journey_senior_manager",
+  senior_manager: "journey_gm",
+};
+
+const diplomaByRoleId = {
+  supervisor: "hospitality_diploma_3",
+  manager: "hospitality_diploma_4",
+  senior_manager: "hospitality_diploma_5",
+};
+
 export const faqs = [
   {
     id: "how_start",
     question: "How do I start?",
     answer:
-      "Use the Growth Navigator above to choose your current role and where you want to go. Click Find Route to see your path, then explore the programmes on the map or in the Programme Explorer.",
+      "Use the Growth Navigator above to choose your current role and goal. Click 'Show my options' to see relevant possibilities.",
   },
   {
     id: "how_long",
@@ -434,10 +351,107 @@ export const faqs = [
 ];
 
 /**
- * Resolve a route from current and destination role IDs.
+ * Returns relevant node IDs based on the user's role and goal
  */
-export function getRoute(fromRoleId, toRoleId) {
-  return routes.find((r) => r.fromRoleId === fromRoleId && r.toRoleId === toRoleId) ?? null;
+export function getRelevantNodes(userContext) {
+  return getActivePathState(userContext).highlightedNodeIds;
+}
+
+export function getNextRoleById(currentRoleId) {
+  const currentRole = roles.find((r) => r.id === currentRoleId);
+  if (!currentRole) return null;
+  return roles.find((r) => r.level === currentRole.level + 1) ?? null;
+}
+
+export function getCoreJourneyForRole(currentRoleId) {
+  return coreJourneyByRoleId[currentRoleId] ?? null;
+}
+
+export function getDiplomaForRole(currentRoleId) {
+  return diplomaByRoleId[currentRoleId] ?? null;
+}
+
+/**
+ * Returns the active path model for map highlighting and connector styling.
+ */
+export function getActivePathState(userContext) {
+  if (!userContext?.currentRoleId) {
+    return {
+      currentRoleId: null,
+      nextRoleId: null,
+      journeyNodeId: null,
+      diplomaNodeId: null,
+      highlightedNodeIds: [],
+      coreConnectorIds: [],
+      accelerationConnectorIds: [],
+      fallbackConnectorIds: [],
+    };
+  }
+
+  const currentRoleId = userContext.currentRoleId;
+  const nextRoleId = getNextRoleById(currentRoleId)?.id ?? null;
+  const journeyNodeId = getCoreJourneyForRole(currentRoleId);
+  const diplomaNodeId = userContext.acceleration
+    ? getDiplomaForRole(currentRoleId)
+    : null;
+
+  const highlightedNodeIds = [currentRoleId];
+  if (nextRoleId) highlightedNodeIds.push(nextRoleId);
+  if (journeyNodeId) highlightedNodeIds.push(journeyNodeId);
+  if (diplomaNodeId) highlightedNodeIds.push(diplomaNodeId);
+
+  const coreConnectorIds = [];
+  if (journeyNodeId) coreConnectorIds.push(`${currentRoleId}->${journeyNodeId}`);
+  if (journeyNodeId && nextRoleId) coreConnectorIds.push(`${journeyNodeId}->${nextRoleId}`);
+
+  const accelerationConnectorIds = [];
+  if (diplomaNodeId) accelerationConnectorIds.push(`${currentRoleId}->${diplomaNodeId}`);
+  if (diplomaNodeId && nextRoleId) accelerationConnectorIds.push(`${diplomaNodeId}->${nextRoleId}`);
+
+  const fallbackConnectorIds = [];
+  if (journeyNodeId && currentRoleId) fallbackConnectorIds.push(`${journeyNodeId}->${currentRoleId}`);
+
+  return {
+    currentRoleId,
+    nextRoleId,
+    journeyNodeId,
+    diplomaNodeId,
+    highlightedNodeIds: [...new Set(highlightedNodeIds)],
+    coreConnectorIds,
+    accelerationConnectorIds,
+    fallbackConnectorIds,
+  };
+}
+
+/**
+ * Get structured context for a node in the panel.
+ */
+export function getNodeContext(nodeId) {
+  const programme = programmes.find(p => p.id === nodeId);
+  if (programme) {
+    return {
+      title: programme.title,
+      type: programme.type,
+      whoItsFor: programme.whoItsFor,
+      whatItHelpsWith: programme.skillsDeveloped || programme.whatToExpect,
+      whatItLeadsTo: programme.nextStep
+    };
+  }
+  
+  const role = roles.find(r => r.id === nodeId);
+  if (role) {
+    return {
+      title: role.label,
+      type: "role",
+      whoItsFor: "Role overview",
+      whatItHelpsWith: role.overview,
+      whatItLeadsTo: "Explore programmes to reach this role",
+      quote: role.quote,
+      quoteAuthor: role.quoteAuthor
+    };
+  }
+
+  return null;
 }
 
 /**
