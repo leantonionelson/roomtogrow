@@ -6,10 +6,10 @@ export default function HeroVideoSection({
 }) {
   return (
     <section
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden border-b border-gray-300 bg-gray-300"
+      className="relative flex min-h-[min(72vh,640px)] w-full items-center justify-center overflow-hidden border-b border-gray-300 bg-gray-300 py-12 md:min-h-[min(68vh,600px)] md:py-14"
       aria-label="Hero"
     >
-      <div className="relative z-10 flex min-h-full w-full flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="relative z-10 flex w-full flex-col items-center justify-center px-4 py-6 text-center md:py-8">
         <h1 className="max-w-3xl text-2xl font-medium text-gray-800 md:text-4xl lg:text-5xl">
           {strapline.headline}
         </h1>

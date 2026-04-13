@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useId } from "react";
 import { roles } from "../data/contentModel";
 
@@ -10,71 +10,52 @@ const TIME_OPTIONS = [
 ];
 
 export default function NavigatorControls({
-  onFindRoute,
+  onRoleChange,
   timeFilter,
   onTimeFilterChange,
+  userContext,
 }) {
-  const [fromRoleId, setFromRoleId] = useState("");
-  const [toRoleId, setToRoleId] = useState("");
+  const [currentRoleId, setCurrentRoleId] = useState(
+    userContext?.currentRoleId ?? ""
+  );
   const timeId = useId();
 
-  const canFindRoute = fromRoleId && toRoleId;
-  const handleFindRoute = () => {
-    if (canFindRoute) onFindRoute(fromRoleId, toRoleId);
-  };
+  useEffect(() => {
+    setCurrentRoleId(userContext?.currentRoleId ?? "");
+  }, [userContext?.currentRoleId]);
 
   return (
-    <div className="grid grid-cols-2 gap-x-3 gap-y-2 items-center">
-      {/* Row 1: two even cols for dropdowns */}
+    <div className="grid grid-cols-1 items-center gap-x-3 gap-y-2">
       <select
-        value={fromRoleId}
-        onChange={(e) => setFromRoleId(e.target.value)}
-        className="rounded border border-gray-400 bg-white px-2 py-1.5 text-sm text-gray-800 w-full min-w-0"
+        value={currentRoleId}
+        onChange={(e) => {
+          const v = e.target.value;
+          setCurrentRoleId(v);
+          onRoleChange?.(v);
+        }}
+        className="w-full min-w-0 rounded border border-gray-400 bg-white px-2 py-1.5 text-sm text-gray-800"
         aria-label="Current role"
       >
-        <option value="">From...</option>
+        <option value="">Current role...</option>
         {roles.map((r) => (
           <option key={r.id} value={r.id}>
             {r.label}
           </option>
         ))}
       </select>
-      <div className="flex items-center gap-1 min-w-0">
-        <span className="text-gray-400 text-xs shrink-0" aria-hidden>→</span>
-        <select
-          value={toRoleId}
-          onChange={(e) => setToRoleId(e.target.value)}
-          className="rounded border border-gray-400 bg-white px-2 py-1.5 text-sm text-gray-800 w-full min-w-0"
-          aria-label="Destination role"
-        >
-          <option value="">To...</option>
-          {roles.map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.label}
-            </option>
-          ))}
-        </select>
-      </div>
 
-      {/* Find Route: full width */}
-      <div className="col-span-2">
-        <button
-          type="button"
-          onClick={handleFindRoute}
-          disabled={!canFindRoute}
-          className="w-full rounded border border-gray-400 bg-gray-800 px-2.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-300 disabled:text-gray-500"
-        >
-          Find Route
-        </button>
-      </div>
-
-      {/* Time: definition in its own row */}
-      <p className="col-span-2 text-xs text-gray-600">
-        How much time do you have? Choose to see learning that fits your availability.
+      <p className="text-xs text-gray-600">
+        Use the map to <span className="font-medium">explore your next step</span>.
+        After you choose a current role, picking a time below applies{" "}
+        <span className="font-medium">start learning now</span> for that role.
       </p>
 
-      {/* Time buttons: spread evenly in their own row */}
-      <div className="col-span-2 grid grid-cols-4 gap-2">
+      <p className="text-xs text-gray-600">
+        How much time do you have? Pick a slot to see learning that fits and to
+        start at your level.
+      </p>
+
+      <div className="grid grid-cols-4 gap-2">
         {TIME_OPTIONS.map(({ value, label }) => {
           const optId = `${timeId}-${value.replace(/\s+/g, "-")}`;
           const isChecked = timeFilter === value;

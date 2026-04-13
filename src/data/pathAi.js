@@ -2,24 +2,18 @@ import {
   getActivePathState,
   getNodeContext,
   getRoleById,
+  MAP_MODE,
 } from "./contentModel";
 
-export const PATH_AI_SYSTEM_PROMPT = `You are a guide inside a structured leadership progression system.
+export const PATH_AI_SYSTEM_PROMPT = `You are a practical coach helping someone decide their next step at work.
 
-The user is currently at {currentRole} and moving toward {nextRole}.
+They are currently a {currentRole} and may be moving toward {nextRole}.
 
-Progression happens through applied experience (core journey).
-Accelerated learning improves efficiency but does not replace experience.
+Ground your answers in their stage: what to focus on, what readiness looks like, and when to involve their manager.
+Do not explain internal systems or frameworks.
+Do not give generic leadership advice — stay specific to this stage.
 
-Only give advice grounded in this progression.
-Do not give generic leadership advice.
-Do not speak broadly - stay within the user's current stage.
-
-Focus on:
-- What they need to do
-- What typically blocks progression
-- How to recognise readiness
-- How acceleration changes behaviour
+Encourage honest self-assessment and conversations with their manager when formal programmes or progression choices are involved.
 
 Keep responses concise and direct.`;
 
@@ -38,7 +32,11 @@ function getSelectedNodeLabel(selectedNodeId) {
 export function buildPathAiContext({ userContext, selectedNodeId }) {
   if (!userContext?.currentRoleId) return null;
 
-  const pathState = getActivePathState(userContext);
+  /** Coach context assumes “explore options” so pathState includes diploma edges. */
+  const pathState = getActivePathState({
+    ...userContext,
+    mapMode: MAP_MODE.exploreNext,
+  });
   const currentRole = getRoleById(pathState.currentRoleId);
   const nextRole = getRoleById(pathState.nextRoleId);
 
@@ -47,7 +45,7 @@ export function buildPathAiContext({ userContext, selectedNodeId }) {
     currentRole: currentRole?.label ?? "Current role",
     nextRoleId: pathState.nextRoleId,
     nextRole: nextRole?.label ?? "Next role",
-    acceleration: Boolean(userContext.acceleration),
+    mapMode: MAP_MODE.exploreNext,
     selectedNode: getSelectedNodeLabel(selectedNodeId),
     selectedNodeId: selectedNodeId ?? null,
     pathState,
@@ -59,9 +57,17 @@ function classifyIntent(question = "", isReadinessCheck = false) {
   const normalized = question.toLowerCase();
   if (normalized.includes("ready")) return "readiness";
   if (normalized.includes("slow") || normalized.includes("block")) return "blockers";
-  if (normalized.includes("accelerat")) return "acceleration";
+  if (normalized.includes("accelerat")) return "managerSponsored";
+  if (
+    normalized.includes("which option") ||
+    (normalized.includes("which") && normalized.includes("right"))
+  ) {
+    return "choice";
+  }
   if (normalized.includes("mistake")) return "mistakes";
-  if (normalized.includes("focus") || normalized.includes("first")) return "focus";
+  if (normalized.includes("focus") || normalized.includes("first") || normalized.includes("next")) {
+    return "focus";
+  }
   return "focus";
 }
 
@@ -86,22 +92,34 @@ function applyGuardrails(text, context) {
   return output.replace(/\s{2,}/g, " ").trim();
 }
 
-function getFocusForIntent(context, intent) {
+function getFocusForIntent(context, intent, lean) {
   const { pathState } = context;
-  const nodeIds = [pathState.currentRoleId, pathState.nextRoleId, pathState.journeyNodeId]
-    .filter(Boolean);
-  const connectorIds = [...pathState.coreConnectorIds];
+  const nodeIds = [
+    pathState.currentRoleId,
+    pathState.nextRoleId,
+    pathState.journeyNodeId,
+  ].filter(Boolean);
+  const connectorIds = [...(pathState.activeCoreConnectorIds ?? [])];
 
-  if (context.acceleration && pathState.diplomaNodeId) {
+  const exploringNext = context.mapMode === MAP_MODE.exploreNext;
+  const includeDiploma =
+    exploringNext &&
+    pathState.diplomaNodeId &&
+    (lean === "diploma" ||
+      intent === "managerSponsored" ||
+      intent === "choice");
+
+  if (includeDiploma) {
     nodeIds.push(pathState.diplomaNodeId);
-    connectorIds.push(...pathState.accelerationConnectorIds);
+    connectorIds.push(...(pathState.diplomaConnectorIds ?? []));
   }
 
   const focusTagByIntent = {
     focus: "delegation",
     blockers: "enableOthers",
     readiness: "readiness",
-    acceleration: "decisionMaking",
+    managerSponsored: "decisionMaking",
+    choice: "options",
     mistakes: "transitionMistakes",
   };
 
@@ -132,10 +150,14 @@ If team output depends on your presence, you are not ready yet.`;
     return generateReadinessResponse(context);
   }
 
-  if (intent === "acceleration") {
-    return `Accelerated learning does not change the path from ${context.currentRole} to ${context.nextRole}.
-It shortens hesitation, improves decision quality, and helps you correct mistakes faster.
-You still need the same real role experiences to progress.`;
+  if (intent === "managerSponsored") {
+    return `Formal qualifications are usually manager-approved. They can strengthen how you lead, but they do not replace what you learn on the job.
+Bring this up with your manager to see what fits your timing and goals toward ${context.nextRole}.`;
+  }
+
+  if (intent === "choice") {
+    return `Start with the core journey for your level — that is what you can act on today.
+If a diploma or formal pathway is right for you, your manager can help you weigh timing, eligibility, and how it supports your next step.`;
   }
 
   if (intent === "mistakes") {
@@ -144,13 +166,13 @@ Your role is to build repeatable standards and develop others to deliver without
   }
 
   if (lean === "diploma") {
-    return `Use this stage to tighten your frameworks: how you prioritise, review decisions, and explain trade-offs.
-The diploma supports clarity, but progression still depends on what changes in your day-to-day leadership behaviour.`;
+    return `A diploma can add structure and recognition, but progression still shows in your day-to-day leadership.
+Discuss with your manager whether this pathway matches your development plan and readiness for ${context.nextRole}.`;
   }
 
   if (lean === "journey") {
     return `Focus first on behaviours you can repeat under pressure: delegation, follow-through, and coaching after mistakes.
-This journey stage is about action quality, not just understanding what good looks like.`;
+This stage is about action quality, not only knowing what good looks like.`;
   }
 
   return `Focus first on shifting from doing the work to enabling others to perform at ${context.currentRole} level.
@@ -167,7 +189,7 @@ export function askPathAi({
   if (!context) {
     return {
       ok: false,
-      answer: "Choose your current role first, then ask about your path.",
+      answer: "Choose your role on the map first, then ask a question.",
       context: null,
       focus: { nodeIds: [], connectorIds: [], tag: "none" },
     };
@@ -183,10 +205,10 @@ export function askPathAi({
     context: {
       currentRole: context.currentRole,
       nextRole: context.nextRole,
-      acceleration: context.acceleration,
+      mapMode: context.mapMode,
       selectedNode: context.selectedNode,
     },
-    focus: getFocusForIntent(context, intent),
+    focus: getFocusForIntent(context, intent, lean),
     intent,
   };
 }

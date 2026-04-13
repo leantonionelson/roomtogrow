@@ -1,4 +1,4 @@
-export default function MobileDrawer({ open, onClose, hasContent, children }) {
+export default function MobileDrawer({ open, onClose, children }) {
   if (!open) return null;
 
   return (
