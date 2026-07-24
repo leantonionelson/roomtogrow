@@ -9,8 +9,22 @@ lerna-debug.log*
 
 node_modules
 dist
+dist-embed
 dist-ssr
 *.local
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Local Claude Code settings (machine-specific paths, other projects)
+.claude/settings.local.json
+
+# Build artifacts
+*.tsbuildinfo
+.next
+apps/cms/*.db
 
 # Editor directories and files
 .vscode/*
