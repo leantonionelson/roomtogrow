@@ -1,0 +1,22 @@
+# Netlify build config for the pnpm monorepo.
+#
+# The deployable site is the standard web build, which outputs to
+# apps/web/dist. (The single-file LMS embed is a separate artifact, built
+# with `pnpm build:embed` — not what Netlify serves.)
+#
+# Netlify installs with pnpm automatically (pnpm-lock.yaml is present and the
+# version is pinned via "packageManager" in the root package.json). This file
+# overrides the older UI-configured "npm run build" / publish "dist" settings
+# that predate the monorepo.
+
+[build]
+  command = "pnpm run build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # The deployed site reads content from the hosted Payload CMS at build/run
+  # time. Leave unset to render from the built-in English fallback content.
+  # Set it in the Netlify UI (Site configuration → Environment variables) or
+  # here once the CMS is hosted:
+  # VITE_CMS_URL = "https://your-cms-host.example.com"
