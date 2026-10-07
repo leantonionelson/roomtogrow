@@ -358,6 +358,8 @@
           "answer": "Use this as an opportunity to clarify the broader business impact you are expected to deliver over the next 12-24 months. You may also want to consider whether you are preparing for a General Manager or equivalent senior leadership role, and how this programme will help you perform more effectively in your current role."
         }
       ],
+      "quote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "quoteAuthor": "Lorem Ipsum, Hotel Name, City",
       "relatedProgrammeIds": [
         "journey_senior_manager",
         "hospitality_diploma_5"
@@ -393,12 +395,12 @@
     {
       "id": "diploma_enrol",
       "question": "How do I enrol in a Diploma programme?",
-      "answer": ""
+      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
     },
     {
       "id": "multiple_programmes",
       "question": "Can I do more than one programme at the same time?",
-      "answer": ""
+      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
     }
   ]
 }

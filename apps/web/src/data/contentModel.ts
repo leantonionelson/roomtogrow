@@ -410,7 +410,10 @@ export const programmes: Programme[] = [
           "Use this as an opportunity to clarify the broader business impact you are expected to deliver over the next 12-24 months. You may also want to consider whether you are preparing for a General Manager or equivalent senior leadership role, and how this programme will help you perform more effectively in your current role.",
       },
     ],
-    // Testimonial to be supplied by IHG.
+    // Placeholder testimonial: to be supplied by IHG.
+    quote:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    quoteAuthor: "Lorem Ipsum, Hotel Name, City",
     relatedProgrammeIds: ["journey_senior_manager", "hospitality_diploma_5"],
     resources: [],
   },
@@ -460,16 +463,18 @@ export const faqs: Faq[] = [
       "Our Journey to... programmes are self-directed eLearning courses that allow you to build essential leadership skills at your own pace. The Diplomas are internationally recognised qualifications that include live instructor-led virtual sessions and assessments.",
   },
   {
-    // Answer to be supplied by IHG; hidden until then.
+    // Placeholder answer: to be supplied by IHG.
     id: "diploma_enrol",
     question: "How do I enrol in a Diploma programme?",
-    answer: "",
+    answer:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
   },
   {
-    // Answer to be supplied by IHG; hidden until then.
+    // Placeholder answer: to be supplied by IHG.
     id: "multiple_programmes",
     question: "Can I do more than one programme at the same time?",
-    answer: "",
+    answer:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
   },
 ];
 
