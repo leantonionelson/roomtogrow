@@ -6,6 +6,8 @@ import RouteNode, {
   type RouteNodeTone,
 } from "./RouteNode";
 import MapViewport from "./MapViewport";
+import { useT } from "../content/ContentProvider";
+import type { StringKey } from "../i18n/strings";
 import type { MapInteractionState, NavigatorUserContext } from "../types/ui";
 import type { PathAiFocus } from "../data/pathAi";
 import { MAP_CONNECTORS } from "../data/mapTopology";
@@ -60,24 +62,26 @@ function getNodeSpec(
 }
 
 /** Summary line + CTA label for map tiles (tooltips + aria). */
-function getMapTileCopy(nodeId: string): {
+function getMapTileCopy(
+  nodeId: string,
+  t: (key: StringKey) => string,
+): {
   summaryLine: string;
   ctaLabel: string;
 } {
   const roleEntity = getRoleById(nodeId);
   if (roleEntity) {
-    const summaryLine =
-      roleEntity.id === "general_manager"
-        ? "Leadership at this level shows in how you grow your team and the business day to day."
-        : overviewLead(roleEntity.overview);
-    return { summaryLine, ctaLabel: "See options" };
+    return {
+      summaryLine: overviewLead(roleEntity.overview),
+      ctaLabel: t("map.seeOptions"),
+    };
   }
   const progEntity = getProgrammeById(nodeId);
   if (progEntity) {
     return {
       summaryLine: programmeRelevanceLine(progEntity),
       ctaLabel:
-        progEntity.type === "advanced" ? "Discuss with manager" : "Start now",
+        progEntity.type === "advanced" ? t("panel.enrolNow") : t("panel.startNow"),
     };
   }
   return { summaryLine: "", ctaLabel: "" };
@@ -142,6 +146,7 @@ export default function MapCanvas({
   }>;
   aiFocus?: PathAiFocus | null;
 }) {
+  const t = useT();
   const isMapActive = userContext != null;
   const mapMode = userContext?.mapMode ?? MAP_MODE.startNow;
   const isExploreNext = mapMode === MAP_MODE.exploreNext;
@@ -268,8 +273,8 @@ export default function MapCanvas({
           : "border-border";
     const cardPulse = isAiFocusNode && !isDiplomaNode ? "animate-pulse" : "";
 
-    const optionalMapBadge = isSoftDiplomaSuggest ? "Optional" : undefined;
-    const { summaryLine, ctaLabel } = getMapTileCopy(nodeId);
+    const optionalMapBadge = isSoftDiplomaSuggest ? t("map.optional") : undefined;
+    const { summaryLine, ctaLabel } = getMapTileCopy(nodeId, t);
     const ariaLabel = [spec.label, summaryLine, ctaLabel].filter(Boolean).join(". ");
 
     return (
@@ -284,7 +289,7 @@ export default function MapCanvas({
             aria-hidden
           >
             <MapPin className="h-2.5 w-2.5" aria-hidden />
-            You are here
+            {t("map.youAreHere")}
           </div>
         )}
         <div
@@ -387,13 +392,13 @@ export default function MapCanvas({
             aria-hidden
           >
             <span className="max-w-[6.5rem] rounded-md bg-orange-100/80 px-1.5 py-1 text-orange-800 sm:max-w-none">
-              Value add learning · Applied leadership
+              {t("map.bandDiplomas")}
             </span>
             <span className="max-w-[6.5rem] rounded-md bg-primary/10 px-1.5 py-1 text-primary sm:max-w-none">
-              Core learning · Transitional leadership
+              {t("map.bandCore")}
             </span>
             <span className="max-w-[6.5rem] rounded-md bg-muted px-1.5 py-1 text-muted-foreground sm:max-w-none">
-              Hotel role
+              {t("map.bandRole")}
             </span>
           </div>
 
@@ -544,7 +549,7 @@ export default function MapCanvas({
           </svg>
 
           <div className="relative z-[2] flex flex-col gap-6 md:gap-8 lg:gap-10">
-            {/* Top tier: 3 diplomas (value add) */}
+            {/* Top tier: 3 accredited diplomas */}
             <div className={`${PYRAMID_GRID} shrink-0 items-end`}>
               {DIPLOMA_PLACEMENT.map(({ id, col }) => (
                 <PyramidSlot key={id} colStart={col} align="end">

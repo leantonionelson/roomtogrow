@@ -34,7 +34,6 @@ function App() {
   const { personas } = useSiteContent();
   const t = useT();
   const navigatorRef = useRef<HTMLElement>(null);
-  const intentSectionRef = useRef<HTMLElement>(null);
   const orientationRef = useRef<HTMLDivElement>(null);
 
   const [leaderMode, setLeaderMode] = useState(false);
@@ -124,15 +123,6 @@ function App() {
     selectedNodeType,
     selectedPersonaId,
   ]);
-
-  const handleStartExploring = () => {
-    intentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleLeaderMode = () => {
-    setLeaderMode(true);
-    navigatorRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   const handleSelectIntent = (intent: IntentValue) => {
     if (intent === "selfGrowth") {
@@ -234,15 +224,8 @@ function App() {
 
       <main className="flex min-w-0 flex-col">
         <div className="shrink-0">
-          <HeroVideoSection
-            onStartExploring={handleStartExploring}
-            onLeaderMode={handleLeaderMode}
-          />
+          <HeroVideoSection />
         </div>
-
-        <section ref={intentSectionRef} className="shrink-0" aria-label="Choose your intent">
-          <IntentSelector onSelectIntent={handleSelectIntent} />
-        </section>
 
         <div ref={orientationRef} className="shrink-0">
           <Container>
@@ -254,6 +237,10 @@ function App() {
         <div className="shrink-0">
           <SellingPointsGrid />
         </div>
+
+        <section className="shrink-0" aria-label="Choose your intent">
+          <IntentSelector onSelectIntent={handleSelectIntent} />
+        </section>
 
         <section
           ref={navigatorRef}

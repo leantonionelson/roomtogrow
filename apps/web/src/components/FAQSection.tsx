@@ -25,20 +25,22 @@ export default function FAQSection() {
         </Reveal>
         <Reveal delay={140}>
           <Accordion type="single" collapsible className="mt-8 gap-2.5">
-            {faqs.map((faq) => (
-              <AccordionItem
-                key={faq.id}
-                value={faq.id}
-                className="rounded-2xl border bg-card px-5 shadow-xs transition-shadow hover:shadow-md"
-              >
-                <AccordionTrigger className="py-4 text-sm font-medium text-foreground">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+            {faqs
+              .filter((faq) => faq.answer.trim())
+              .map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={faq.id}
+                  className="rounded-2xl border bg-card px-5 shadow-xs transition-shadow hover:shadow-md"
+                >
+                  <AccordionTrigger className="py-4 text-sm font-medium text-foreground">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
           </Accordion>
         </Reveal>
       </div>

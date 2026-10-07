@@ -13,17 +13,19 @@ export default function IntroSection() {
           </span>
         </Reveal>
         <Reveal delay={120}>
-          <p className="text-gradient-brand mt-6 text-pretty text-2xl font-semibold leading-snug tracking-tight md:text-3xl">
+          <h2 className="text-gradient-brand mt-6 text-pretty text-2xl font-semibold leading-snug tracking-tight md:text-3xl">
             {introBlock.internalComms}
-          </p>
+          </h2>
         </Reveal>
         <Reveal delay={220}>
           <p className="mt-6 text-pretty leading-relaxed text-muted-foreground">
             {introBlock.ihgUniversityExplanation}
           </p>
-          <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">
-            {introBlock.journeyStartsHere}
-          </p>
+          {introBlock.journeyStartsHere ? (
+            <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">
+              {introBlock.journeyStartsHere}
+            </p>
+          ) : null}
         </Reveal>
       </div>
     </section>

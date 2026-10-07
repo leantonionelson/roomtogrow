@@ -34,7 +34,13 @@ export default function IntentSelector({
           </p>
         </Reveal>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+        <div
+          className={`mx-auto mt-10 grid gap-4 ${
+            intentSelector.options.length === 2
+              ? "max-w-2xl sm:grid-cols-2"
+              : "sm:grid-cols-3"
+          }`}
+        >
           {intentSelector.options.map((opt, i) => {
             const Icon = INTENT_ICONS[opt.value] ?? Compass;
             return (

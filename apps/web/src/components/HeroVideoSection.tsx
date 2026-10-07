@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import { ChevronDown, Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useSiteContent, useT } from "../content/ContentProvider";
 import VideoDialog from "./VideoDialog";
 import heroStill from "../assets/film/hero-still.jpg";
@@ -12,13 +11,7 @@ const CAMPAIGN_VIDEO_ID = "U1xXqaZ52Ms";
 const rise = (ms: number) =>
   ({ "--rise-delay": `${ms}ms` }) as CSSProperties;
 
-export default function HeroVideoSection({
-  onStartExploring,
-  onLeaderMode,
-}: {
-  onStartExploring: () => void;
-  onLeaderMode: () => void;
-}) {
+export default function HeroVideoSection() {
   const { strapline } = useSiteContent();
   const t = useT();
   const imgRef = useRef<HTMLImageElement>(null);
@@ -86,34 +79,13 @@ export default function HeroVideoSection({
           {strapline.intro}
         </p>
 
-        <div
-          className="hero-rise mt-10 flex flex-wrap items-center justify-center gap-3"
-          style={rise(360)}
-        >
-          <Button
-            size="lg"
-            onClick={onStartExploring}
-            className="h-12 rounded-full bg-white px-7 text-primary shadow-lg shadow-black/20 hover:bg-white/90"
-          >
-            {t("hero.startExploring")}
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={onLeaderMode}
-            className="glass-dark h-12 rounded-full border-white/30 px-7 text-white hover:bg-white/15 hover:text-white"
-          >
-            {t("hero.developingTeam")}
-          </Button>
-        </div>
-
         <VideoDialog videoId={CAMPAIGN_VIDEO_ID} title={t("hero.watchFilm")}>
           <button
             type="button"
-            className="glass-dark hero-rise group mt-14 inline-flex items-center gap-3 rounded-full py-1.5 pl-1.5 pr-6 text-sm font-medium text-white shadow-sm transition-colors hover:bg-white/15"
-            style={rise(480)}
+            className="hero-rise group mt-10 inline-flex h-12 items-center gap-3 rounded-full bg-white py-1.5 pl-1.5 pr-7 text-sm font-medium text-primary shadow-lg shadow-black/20 transition-colors hover:bg-white/90"
+            style={rise(360)}
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-105">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-105">
               <Play className="ml-0.5 h-4 w-4 fill-current" aria-hidden />
             </span>
             {t("hero.watchFilm")}

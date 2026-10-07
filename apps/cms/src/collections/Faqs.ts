@@ -18,7 +18,12 @@ export const Faqs: CollectionConfig = {
       unique: true,
     },
     { name: 'question', type: 'text', required: true, localized: true },
-    { name: 'answer', type: 'textarea', required: true, localized: true },
+    {
+      name: 'answer',
+      type: 'textarea',
+      localized: true,
+      admin: { description: 'FAQs without an answer are hidden on the page.' },
+    },
     {
       name: 'order',
       type: 'number',

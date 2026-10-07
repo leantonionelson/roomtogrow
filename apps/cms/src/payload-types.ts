@@ -193,9 +193,25 @@ export interface Role {
    */
   level: number;
   label: string;
+  /**
+   * "Your current role" description in the sidebar.
+   */
   overview: string;
-  quote?: string | null;
-  quoteAuthor?: string | null;
+  /**
+   * "Your next step" copy.
+   */
+  nextStep: string;
+  /**
+   * Learning links that are not on the map (e.g. Colleague Learning Guide). With a description they are also listed under Suggested programmes.
+   */
+  resources?:
+    | {
+        title: string;
+        description?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -219,7 +235,7 @@ export interface Persona {
   createdAt: string;
 }
 /**
- * Learning programmes on the map: core journeys and advanced (diploma) programmes.
+ * Learning programmes on the map: core learning (Journey to...) and accredited diplomas.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programmes".
@@ -235,23 +251,70 @@ export interface Programme {
    * Role levels this programme spans on the map (0–4).
    */
   levels: number[];
+  /**
+   * Short title used on the map and in buttons.
+   */
   title: string;
   /**
-   * One-line summary for map tooltips and sidebar.
+   * Panel heading if different, e.g. with "(Level 3)".
    */
-  mapSummary: string;
-  leadsTo: string;
-  whoItsFor: string;
-  skillsDeveloped: string;
-  whatToExpect: string;
-  timeCommitment: string;
-  nextStep: string;
+  fullTitle?: string | null;
   /**
-   * Advanced programmes only.
+   * Short description: panel intro and map tooltip.
    */
-  whyChooseThis?: string | null;
+  description: string;
+  /**
+   * Shown after the title in a role's "Suggested programmes" list, e.g. "core pathway towards your next role."
+   */
+  suggestionLine: string;
+  whoItsFor: string;
+  /**
+   * "What you'll gain".
+   */
+  outcomes: string;
+  /**
+   * Start now (core) / Enrol now (diploma) link.
+   */
+  ctaUrl?: string | null;
+  /**
+   * Learn more (core) / Find out more (diploma) link.
+   */
+  moreInfoUrl?: string | null;
+  /**
+   * Related learning: programme slugs in display order (e.g. "journey_manager").
+   */
+  relatedProgrammes?: string[] | null;
+  /**
+   * Learning links that are not on the map (e.g. Colleague Learning Guide). Shown under Related learning.
+   */
+  resources?:
+    | {
+        title: string;
+        description?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * "Is this right for me?" guidance.
+   */
+  recommendation?: string | null;
+  /**
+   * Questions shown under "Talk to your manager".
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   quote?: string | null;
   quoteAuthor?: string | null;
+  /**
+   * "Read more" link under the testimonial.
+   */
+  quoteUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -281,7 +344,10 @@ export interface Faq {
   id: number;
   slug: string;
   question: string;
-  answer: string;
+  /**
+   * FAQs without an answer are hidden on the page.
+   */
+  answer?: string | null;
   /**
    * Display order, lowest first.
    */
@@ -432,8 +498,15 @@ export interface RolesSelect<T extends boolean = true> {
   level?: T;
   label?: T;
   overview?: T;
-  quote?: T;
-  quoteAuthor?: T;
+  nextStep?: T;
+  resources?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -459,16 +532,33 @@ export interface ProgrammesSelect<T extends boolean = true> {
   type?: T;
   levels?: T;
   title?: T;
-  mapSummary?: T;
-  leadsTo?: T;
+  fullTitle?: T;
+  description?: T;
+  suggestionLine?: T;
   whoItsFor?: T;
-  skillsDeveloped?: T;
-  whatToExpect?: T;
-  timeCommitment?: T;
-  nextStep?: T;
-  whyChooseThis?: T;
+  outcomes?: T;
+  ctaUrl?: T;
+  moreInfoUrl?: T;
+  relatedProgrammes?: T;
+  resources?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        url?: T;
+        id?: T;
+      };
+  recommendation?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
   quote?: T;
   quoteAuthor?: T;
+  quoteUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -551,7 +641,7 @@ export interface SiteCopy {
   introBlock: {
     internalComms: string;
     ihgUniversityExplanation: string;
-    journeyStartsHere: string;
+    journeyStartsHere?: string | null;
   };
   intentSelector: {
     question: string;
@@ -574,9 +664,13 @@ export interface SiteCopy {
         }[]
       | null;
   };
+  /**
+   * "Why invest your time with IHG University?" carousel cards.
+   */
   sellingPoints?:
     | {
-        text: string;
+        title: string;
+        body: string;
         id?: string | null;
       }[]
     | null;
@@ -663,7 +757,8 @@ export interface SiteCopySelect<T extends boolean = true> {
   sellingPoints?:
     | T
     | {
-        text?: T;
+        title?: T;
+        body?: T;
         id?: T;
       };
   managerGuidance?:

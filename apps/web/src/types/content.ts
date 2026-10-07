@@ -19,14 +19,27 @@ export interface MapConnector {
 /** A node on the map is a role, a core journey programme, or an advanced programme. */
 export type NodeType = "role" | "core" | "advanced";
 
+/**
+ * A learning link that isn't a node on the map (e.g. the Colleague Learning
+ * Guide or the General Manager Programme). With a description it is also
+ * listed under the role's suggested programmes.
+ */
+export interface LearningResource {
+  title: string;
+  description?: string;
+  url?: string;
+}
+
 export interface Role {
   id: string;
   /** 0 = frontline … 4 = general manager; drives pyramid tiers. */
   level: number;
   label: string;
+  /** "Your current role" description in the sidebar. */
   overview: string;
-  quote: string;
-  quoteAuthor: string;
+  /** "Your next step" copy. */
+  nextStep: string;
+  resources: LearningResource[];
 }
 
 export interface Persona {
@@ -50,22 +63,43 @@ export interface PersonaQualifyingQuestion {
 
 export type ProgrammeType = "core" | "advanced";
 
+export interface ProgrammeFaq {
+  question: string;
+  answer: string;
+}
+
 export interface Programme {
   id: string;
   type: ProgrammeType;
   /** Role levels this programme spans on the map. */
   levels: number[];
+  /** Short title used on the map and in buttons. */
   title: string;
-  mapSummary: string;
-  leadsTo: string;
+  /** Panel heading when it differs from `title` (e.g. with the diploma level). */
+  fullTitle?: string;
+  /** Short description: panel intro and map tooltip. */
+  description: string;
+  /** Line shown after the title in a role's "Suggested programmes" list. */
+  suggestionLine: string;
   whoItsFor: string;
-  skillsDeveloped: string;
-  whatToExpect: string;
-  timeCommitment: string;
-  nextStep: string;
-  whyChooseThis?: string;
+  /** "What you'll gain". */
+  outcomes: string;
+  /** Start now (core) / Enrol now (diploma) link. */
+  ctaUrl?: string;
+  /** Learn more (core) / Find out more (diploma) link. */
+  moreInfoUrl?: string;
+  /** Related learning: programme ids on the map, in display order. */
+  relatedProgrammeIds: string[];
+  /** Related learning that lives outside the map. */
+  resources: LearningResource[];
+  /** Diplomas: "Is this right for me?" guidance. */
+  recommendation?: string;
+  /** Diplomas: questions shown under "Talk to your manager". */
+  faqs: ProgrammeFaq[];
   quote?: string;
   quoteAuthor?: string;
+  /** "Read more" link under the testimonial. */
+  quoteUrl?: string;
 }
 
 export interface Story {
@@ -78,6 +112,7 @@ export interface Story {
 export interface Faq {
   id: string;
   question: string;
+  /** Empty until the client supplies it; unanswered FAQs are not shown. */
   answer: string;
 }
 
@@ -87,9 +122,16 @@ export interface Strapline {
 }
 
 export interface IntroBlock {
+  /** Section headline. */
   internalComms: string;
   ihgUniversityExplanation: string;
-  journeyStartsHere: string;
+  /** Optional closing line. */
+  journeyStartsHere?: string;
+}
+
+export interface SellingPoint {
+  title: string;
+  body: string;
 }
 
 export type IntentValue = "selfGrowth" | "developingTeam" | "learnAbout";
@@ -132,18 +174,6 @@ export interface ActivePathState {
   fallbackConnectorIds: string[];
 }
 
-/** Structured panel context for a selected map node. */
-export interface NodeContext {
-  title: string;
-  type: NodeType;
-  whoItsFor: string;
-  whatItHelpsWith: string;
-  whatItLeadsTo: string;
-  whyChooseThis?: string;
-  quote?: string;
-  quoteAuthor?: string;
-}
-
 /** Deterministic "development case" copy for manager conversations. */
 export interface DevelopmentCase {
   currentPosition: string;
@@ -161,7 +191,7 @@ export interface SiteContent {
   introBlock: IntroBlock;
   intentSelector: IntentSelectorContent;
   pathAiConfig: PathAiConfig;
-  sellingPoints: string[];
+  sellingPoints: SellingPoint[];
   managerGuidance: string[];
   leaderActionSteps: string[];
   roles: Role[];

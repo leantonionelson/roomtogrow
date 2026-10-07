@@ -1,7 +1,7 @@
 import type { ActivePathState, MapMode, UserContext } from "../types/content";
 import {
   getActivePathState,
-  getNodeContext,
+  getNodeTitle,
   getRoleById,
   MAP_MODE,
 } from "./contentModel";
@@ -67,7 +67,7 @@ export interface PathAiResult {
 
 function getSelectedNodeLabel(selectedNodeId: string | null | undefined): string | null {
   if (!selectedNodeId) return null;
-  return getNodeContext(selectedNodeId)?.title ?? null;
+  return getNodeTitle(selectedNodeId);
 }
 
 export function buildPathAiContext({

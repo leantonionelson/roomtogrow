@@ -29,7 +29,7 @@ export const SiteCopy: GlobalConfig = {
       fields: [
         { name: 'internalComms', type: 'textarea', required: true },
         { name: 'ihgUniversityExplanation', type: 'textarea', required: true },
-        { name: 'journeyStartsHere', type: 'textarea', required: true },
+        { name: 'journeyStartsHere', type: 'textarea' },
       ],
     },
     {
@@ -71,7 +71,11 @@ export const SiteCopy: GlobalConfig = {
       name: 'sellingPoints',
       type: 'array',
       localized: true,
-      fields: [{ name: 'text', type: 'text', required: true }],
+      admin: { description: '"Why invest your time with IHG University?" carousel cards.' },
+      fields: [
+        { name: 'title', type: 'text', required: true },
+        { name: 'body', type: 'textarea', required: true },
+      ],
     },
     {
       name: 'managerGuidance',

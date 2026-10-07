@@ -9,10 +9,14 @@ import type {
   Faq,
   IntentSelectorContent,
   IntentValue,
+  LearningResource,
   Persona,
   PersonaQualifyingQuestion,
   Programme,
+  ProgrammeFaq,
+  ProgrammeType,
   Role,
+  SellingPoint,
   SiteContent,
   Story,
 } from "../types/content";
@@ -39,7 +43,7 @@ interface SiteCopyGlobal {
     inputPlaceholder: string;
     quickPrompts: TextRow[];
   };
-  sellingPoints: TextRow[];
+  sellingPoints: SellingPoint[];
   managerGuidance: TextRow[];
   leaderActionSteps: TextRow[];
   personaQualifier: {
@@ -51,9 +55,46 @@ interface SiteCopyGlobal {
   };
 }
 
-type RoleDoc = Omit<Role, "id"> & { slug: string };
+/** Payload returns `null` (not `undefined`) for empty optional fields. */
+type Nullable<T> = T | null | undefined;
+
+interface ResourceRow {
+  title: string;
+  description?: Nullable<string>;
+  url?: Nullable<string>;
+}
+
+interface RoleDoc {
+  slug: string;
+  level: number;
+  label: string;
+  overview: string;
+  nextStep?: Nullable<string>;
+  resources?: Nullable<ResourceRow[]>;
+}
+
+interface ProgrammeDoc {
+  slug: string;
+  type: ProgrammeType;
+  levels: number[];
+  title: string;
+  fullTitle?: Nullable<string>;
+  description: string;
+  suggestionLine?: Nullable<string>;
+  whoItsFor: string;
+  outcomes: string;
+  ctaUrl?: Nullable<string>;
+  moreInfoUrl?: Nullable<string>;
+  relatedProgrammes?: Nullable<string[]>;
+  resources?: Nullable<ResourceRow[]>;
+  recommendation?: Nullable<string>;
+  faqs?: Nullable<ProgrammeFaq[]>;
+  quote?: Nullable<string>;
+  quoteAuthor?: Nullable<string>;
+  quoteUrl?: Nullable<string>;
+}
+
 type PersonaDoc = Omit<Persona, "id"> & { slug: string };
-type ProgrammeDoc = Omit<Programme, "id"> & { slug: string };
 type StoryDoc = Omit<Story, "id"> & { slug: string };
 type FaqDoc = Omit<Faq, "id"> & { slug: string; order: number };
 
@@ -75,6 +116,46 @@ async function fetchJson<T>(
 
 const texts = (rows: TextRow[] | undefined): string[] =>
   (rows ?? []).map((r) => r.text);
+
+const opt = (value: Nullable<string>): string | undefined =>
+  value?.trim() ? value : undefined;
+
+const toResources = (rows: Nullable<ResourceRow[]>): LearningResource[] =>
+  (rows ?? []).map((r) => ({
+    title: r.title,
+    description: opt(r.description),
+    url: opt(r.url),
+  }));
+
+const toRole = (doc: RoleDoc): Role => ({
+  id: doc.slug,
+  level: doc.level,
+  label: doc.label,
+  overview: doc.overview,
+  nextStep: doc.nextStep ?? "",
+  resources: toResources(doc.resources),
+});
+
+const toProgramme = (doc: ProgrammeDoc): Programme => ({
+  id: doc.slug,
+  type: doc.type,
+  levels: doc.levels,
+  title: doc.title,
+  fullTitle: opt(doc.fullTitle),
+  description: doc.description,
+  suggestionLine: doc.suggestionLine ?? "",
+  whoItsFor: doc.whoItsFor,
+  outcomes: doc.outcomes,
+  ctaUrl: opt(doc.ctaUrl),
+  moreInfoUrl: opt(doc.moreInfoUrl),
+  relatedProgrammeIds: doc.relatedProgrammes ?? [],
+  resources: toResources(doc.resources),
+  recommendation: opt(doc.recommendation),
+  faqs: (doc.faqs ?? []).map(({ question, answer }) => ({ question, answer })),
+  quote: opt(doc.quote),
+  quoteAuthor: opt(doc.quoteAuthor),
+  quoteUrl: opt(doc.quoteUrl),
+});
 
 export function getCmsUrl(): string | null {
   const url = import.meta.env.VITE_CMS_URL?.trim();
@@ -148,17 +229,20 @@ export async function fetchSiteContent(
       inputPlaceholder: siteCopy.pathAiConfig.inputPlaceholder,
       quickPrompts: texts(siteCopy.pathAiConfig.quickPrompts),
     },
-    sellingPoints: texts(siteCopy.sellingPoints),
+    sellingPoints: (siteCopy.sellingPoints ?? []).map(({ title, body }) => ({
+      title,
+      body,
+    })),
     managerGuidance: texts(siteCopy.managerGuidance),
     leaderActionSteps: texts(siteCopy.leaderActionSteps),
-    roles: roles.docs.map(({ slug, ...r }) => ({ id: slug, ...r })),
+    roles: roles.docs.map(toRole),
     personas: personas.docs.map(({ slug, ...p }) => ({ id: slug, ...p })),
-    programmes: programmes.docs.map(({ slug, ...p }) => ({ id: slug, ...p })),
+    programmes: programmes.docs.map(toProgramme),
     stories: stories.docs.map(({ slug, ...s }) => ({ id: slug, ...s })),
     faqs: faqs.docs.map((f) => ({
       id: f.slug,
       question: f.question,
-      answer: f.answer,
+      answer: f.answer ?? "",
     })),
     personaQualifyingQuestions,
   };

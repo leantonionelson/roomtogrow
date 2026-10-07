@@ -18,7 +18,7 @@ import film3 from "../assets/film/film-3.jpg";
 const CARD_GAP = 20;
 
 /** Cycled per card; purely decorative until brand imagery arrives. */
-const POINT_ICONS = [Route, UsersRound, Clock3, GraduationCap, LayoutGrid];
+const POINT_ICONS = [Clock3, Route, GraduationCap, LayoutGrid, UsersRound];
 /** Stills from the campaign film — interim imagery until brand assets land. */
 const POINT_IMAGES = [film1, film2, film3];
 
@@ -99,7 +99,7 @@ export default function SellingPointsGrid() {
           const image = POINT_IMAGES[i % POINT_IMAGES.length];
           return (
             <Reveal
-              key={point}
+              key={point.title}
               delay={i * 90}
               className="w-[290px] flex-shrink-0 snap-start sm:w-[340px] lg:w-[380px]"
             >
@@ -130,9 +130,16 @@ export default function SellingPointsGrid() {
                   </span>
                 </div>
                 <div className="flex flex-1 flex-col justify-between gap-4 p-6">
-                  <p className="text-pretty text-lg font-medium leading-snug tracking-tight text-foreground">
-                    {point}
-                  </p>
+                  <div>
+                    <h3 className="text-pretty text-lg font-medium leading-snug tracking-tight text-foreground">
+                      {point.title}
+                    </h3>
+                    {point.body ? (
+                      <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
+                        {point.body}
+                      </p>
+                    ) : null}
+                  </div>
                   <span
                     className="h-1 w-10 rounded-full bg-primary/25 transition-all duration-300 group-hover:w-16 group-hover:bg-primary"
                     aria-hidden
