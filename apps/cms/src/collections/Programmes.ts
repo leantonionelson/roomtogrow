@@ -67,7 +67,7 @@ export const Programmes: CollectionConfig = {
       localized: true,
       admin: {
         description:
-          'Shown after the title in a role\'s "Suggested programmes" list, e.g. "core pathway towards your next role."',
+          'Shown after the title in a role\'s "Suggested programmes" list, e.g. "pathway towards your next role."',
       },
     },
     { name: 'whoItsFor', type: 'textarea', required: true, localized: true },

@@ -1,11 +1,11 @@
 {
   "strapline": {
-    "headline": "Your world of learning. IHG University.",
+    "headline": "Leadership learning for every stage. IHG University.",
     "intro": "IHG University offers practical, flexible leadership learning that’s open to all, no matter where you are now or where you’re heading."
   },
   "introBlock": {
     "internalComms": "We believe great leaders aren't born – they're developed.",
-    "ihgUniversityExplanation": "Our leadership learning programmes are designed to grow your skills at every stage of your career. Whether you're stepping into your first supervisory role or looking to develop the strategic thinking of a senior leader, IHG University offers a clear, connected pathway of learning, including eLearning programmes and accredited diplomas."
+    "ihgUniversityExplanation": "Our leadership learning programmes are designed to grow your skills at every stage of your career. Whether you're stepping into your first supervisory role or looking to develop the strategic thinking of a senior leader, IHG University offers a clear pathway of learning with the chance to achieve externally recognised accreditations."
   },
   "intentSelector": {
     "question": "What are you looking for today?",
@@ -53,15 +53,15 @@
     }
   ],
   "managerGuidance": [
-    "Have regular one-to-one conversations about career goals and development.",
-    "Use the manager conversation guides included in each programme.",
-    "Recognise and celebrate learning milestones — completing a module is worth acknowledging.",
+    "Have regular one-to-one conversations about career goals and development",
+    "Use the manager conversation guides included in each programme",
+    "Recognise and celebrate learning milestones — completing a module is worth acknowledging",
     "Create space for your team to apply what they're learning on the job."
   ],
   "leaderActionSteps": [
-    "Share this page with a team member who's ready for their next step.",
-    "Ask 'What are you learning right now?' in your next team meeting.",
-    "Encourage colleagues to build a Diploma into their development plans.",
+    "Share this page with a team member who's ready for their next step",
+    "Ask 'What are you learning right now?' in your next team meeting",
+    "Encourage colleagues to build a Diploma into their development plans",
     "Set aside 20 minutes to explore the learning pathways together."
   ],
   "roles": [
@@ -105,7 +105,7 @@
       "id": "general_manager",
       "level": 4,
       "label": "General Manager",
-      "overview": "You set the vision, own the results and build the culture that makes your hotel exceptional. Your leadership touches every team member and every guest experience.",
+      "overview": "You set the vision, own the results and build the culture that makes your hotel exceptional. Your leadership influences every team member and every guest experience.",
       "nextStep": "Expand your impact within IHG, whether that means working at a bigger hotel, a different brand, across multiple properties or in regional leadership.",
       "resources": [
         {
@@ -190,7 +190,7 @@
       ],
       "title": "Journey to Supervisor",
       "description": "A self-directed eLearning programme to build essential skills and confidence to lead a team for the first time.",
-      "suggestionLine": "core pathway towards your next role.",
+      "suggestionLine": "pathway towards your next role.",
       "whoItsFor": "New or aspiring supervisors in IHG hotels who are stepping into a leadership role for the first time.",
       "outcomes": "Practical tools for managing performance, delegating effectively and leading your team with confidence.",
       "relatedProgrammeIds": [],
@@ -210,7 +210,7 @@
       ],
       "title": "Journey to Manager",
       "description": "A self-directed eLearning programme with 12 lessons across management fundamentals, team development and coaching.",
-      "suggestionLine": "core pathway towards your next role.",
+      "suggestionLine": "pathway towards your next role.",
       "whoItsFor": "New or developing managers in IHG hotels who are ready to deepen their leadership skills and shift their focus from doing to leading.",
       "outcomes": "Practical skills in goal-setting, delegation, performance management, feedback, motivation and coaching.",
       "relatedProgrammeIds": [
@@ -229,7 +229,7 @@
       ],
       "title": "Journey to Senior Manager",
       "description": "A self-directed eLearning programme with four modules to help you build emotional intelligence, commercial thinking, coaching skills and the ability to connect and inspire teams.",
-      "suggestionLine": "core pathway towards your next role.",
+      "suggestionLine": "pathway towards your next role.",
       "whoItsFor": "Experienced managers in IHG hotels who are ready to take on broader leadership responsibility and develop the skills of a senior leader.",
       "outcomes": "Senior leadership skills that allow you to lead through change, make commercial decisions confidently and build trust and alignment across your hotel.",
       "relatedProgrammeIds": [
@@ -247,8 +247,8 @@
         4
       ],
       "title": "Journey to General Manager",
-      "description": "A focused learning playlist designed to prepare leaders for the most critical leadership role in a hotel.",
-      "suggestionLine": "core pathway towards your next role.",
+      "description": "A focused learning programme designed to prepare leaders for the most critical leadership role in a hotel.",
+      "suggestionLine": "pathway towards your next role.",
       "whoItsFor": "Experienced leaders wanting to prepare for a General Manager role.",
       "outcomes": "The confidence to lead a hotel with the ability to balance commercial, people and brand priorities to deliver impact at the enterprise level.",
       "relatedProgrammeIds": [
@@ -267,7 +267,7 @@
       "title": "Foundational Diploma of Hospitality Leadership",
       "fullTitle": "Foundational Diploma of Hospitality Leadership (Level 3)",
       "description": "An accredited, blended learning programme with six live virtual modules leading to an internationally recognised qualification.",
-      "suggestionLine": "accredited qualification to develop leadership skills.",
+      "suggestionLine": "accredited qualification from the CTH (Confederation of Tourism and Hospitality).",
       "whoItsFor": "Supervisors in IHG hotels who are ready to deepen their leadership skills through structured, facilitated learning.",
       "outcomes": "A formal accredited qualification covering six deeply practical modules including performance coaching, team optimisation, collaboration, change management, goal-setting and talent development.",
       "recommendation": "This programme is ideal if you are currently in a supervisory role and have completed, or are working through, the tools learned in Journey to Supervisor. It is best taken when you have a team to lead, so you can apply your learning directly in your role.",
@@ -303,7 +303,7 @@
       "title": "Diploma of Hospitality Leadership",
       "fullTitle": "Diploma of Hospitality Leadership (Level 4)",
       "description": "An accredited, blended learning qualification with six live virtual modules that take managers deeper into the leadership capabilities that drive hotel performance.",
-      "suggestionLine": "accredited qualification to help you lead as a manager.",
+      "suggestionLine": "accredited qualification from the CTH (Confederation of Tourism and Hospitality).",
       "whoItsFor": "Managers in IHG hotels who are ready to formalise their leadership development and earn a recognised qualification.",
       "outcomes": "An internationally recognised management-level qualification and advanced skills across performance coaching, team optimisation, change management, talent development, collaboration strategies and goal and resource management – applied to the real challenges of hotel management.",
       "recommendation": "This programme is designed for managers who are actively leading teams and looking to formalise their development. It works best alongside or after completing Journey to Manager and is ideal for those considering a step up to senior management.",
@@ -340,8 +340,8 @@
       "title": "Advanced Diploma of Hospitality Leadership",
       "fullTitle": "Advanced Diploma of Hospitality Leadership (Level 5)",
       "description": "An accredited learning programme to enable senior hospitality leaders to lead complex hotel operations and drive sustained business performance.",
-      "suggestionLine": "accredited qualification to elevate your leadership at a senior level.",
-      "whoItsFor": "Heads of Departments, EXCOM, Directors or 2IC leaders who are ready to be tested in applying their leadership tools in real world hotel environments. You must have completed Journey to Senior Manager.",
+      "suggestionLine": "accredited qualification from the CTH (Confederation of Tourism and Hospitality).",
+      "whoItsFor": "Heads of Departments, Senior Leaders and ExCom who are ready to be tested in applying their leadership tools in real world hotel environments. You must have completed Journey to Senior Manager.",
       "outcomes": "An internationally recognised senior leadership qualification, building advanced capabilities in strategic thinking, commercial and operational leadership, leading through others, driving change, and influencing stakeholders — applied to the complex, real-world challenges of leading hotels at scale.",
       "recommendation": "If you are already leading through others and want to sharpen your strategic, commercial and leadership capability in a way that is recognised and immediately relevant to your role, this programme is likely to be the right next step.",
       "faqs": [
@@ -390,17 +390,17 @@
     {
       "id": "journey_vs_diploma",
       "question": "What's the difference between the Journey to... programmes and the Diplomas?",
-      "answer": "Our Journey to... programmes are self-directed eLearning courses that allow you to build essential leadership skills at your own pace. The Diplomas are internationally recognised qualifications that include live instructor-led virtual sessions and assessments."
+      "answer": "Our Journey to... programmes are self-directed eLearning courses that allow you to build essential leadership skills at your own pace. The Diplomas are internationally recognised qualifications that have a fee and include live instructor-led virtual sessions and assessments."
     },
     {
       "id": "diploma_enrol",
       "question": "How do I enrol in a Diploma programme?",
-      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+      "answer": "Once you have agreement from your Manager that they are willing to pay the certification fee and you can register for the course, you can sign up on IHG University:\n[Foundational Diploma of Hospitality Leadership](https://mylearning.sumtotal.host/core/viewPlaylistDetails/81122)\n[Diploma of Hospitality Leadership](https://mylearning.sumtotal.host/rcore/c/viewPlaylistDetails/138054)"
     },
     {
       "id": "multiple_programmes",
       "question": "Can I do more than one programme at the same time?",
-      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+      "answer": "To get the greatest value from your learning journey, we strongly recommend completing one course at a time. Focusing on a single learning experience allows you to fully absorb the content, build understanding at a deeper level and avoid splitting your attention across multiple topics. By taking the time to learn, reflect and apply new skills in your role before moving on to the next course, you'll achieve stronger results and create lasting behaviour change."
     }
   ]
 }

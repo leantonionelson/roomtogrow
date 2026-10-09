@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -6,6 +7,31 @@ import {
 } from "@/components/ui/accordion";
 import { useSiteContent, useT } from "../content/ContentProvider";
 import { Reveal } from "./motion";
+
+/** `[label](https://…)` in an answer becomes a link; everything else is text. */
+const LINK_PATTERN = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+function AnswerText({ text }: { text: string }) {
+  const parts: ReactNode[] = [];
+  let last = 0;
+  for (const match of text.matchAll(LINK_PATTERN)) {
+    parts.push(text.slice(last, match.index));
+    parts.push(
+      <a
+        key={match.index}
+        href={match[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-primary underline underline-offset-2 hover:text-primary/80"
+      >
+        {match[1]}
+      </a>,
+    );
+    last = match.index + match[0].length;
+  }
+  parts.push(text.slice(last));
+  return <p className="whitespace-pre-line">{parts}</p>;
+}
 
 export default function FAQSection() {
   const { faqs } = useSiteContent();
@@ -37,7 +63,7 @@ export default function FAQSection() {
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
-                    {faq.answer}
+                    <AnswerText text={faq.answer} />
                   </AccordionContent>
                 </AccordionItem>
               ))}

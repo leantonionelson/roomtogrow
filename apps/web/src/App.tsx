@@ -8,7 +8,6 @@ import HeroVideoSection from "./components/HeroVideoSection";
 import IntroSection from "./components/IntroSection";
 import SellingPointsGrid from "./components/SellingPointsGrid";
 import NavigatorControls from "./components/NavigatorControls";
-import PersonaQualifier from "./components/PersonaQualifier";
 import MapCanvas from "./components/MapCanvas";
 import RoutePanel from "./components/RoutePanel";
 import MobileDrawer from "./components/MobileDrawer";
@@ -301,9 +300,6 @@ function App() {
                   selectedProgrammeId={selectedProgrammeId}
                   onSelectMapNode={handleMapNodeSelect}
                   openDrawer={handleOpenDrawer}
-                  selectedPersonaId={selectedPersonaId}
-                  onSelectPersona={setSelectedPersonaId}
-                  PersonaQualifierComponent={PersonaQualifier}
                   aiFocus={aiFocus}
                 />
               </div>

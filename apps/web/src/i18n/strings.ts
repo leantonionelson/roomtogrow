@@ -14,7 +14,7 @@ const en = {
   "map.zoomIn": "Zoom in",
   "map.zoomOut": "Zoom out",
   "map.reset": "Return to centre",
-  "map.bandDiplomas": "Accredited diplomas",
+  "map.bandDiplomas": "Accredited learning",
   "map.bandCore": "Core learning",
   "map.bandRole": "Your role",
   "map.youAreHere": "You are here",
@@ -53,8 +53,6 @@ const en = {
   "drawer.title": "Detail panel",
   "drawer.close": "Close",
 
-  "pq.kicker": "So we can tailor your experience",
-
   "managers.kicker": "For managers",
   "managers.heading": "Supporting your team",
   "managers.sub":
@@ -83,7 +81,7 @@ const en = {
   "panel.findOutMore": "Find out more",
   "panel.linkComingSoon": "Link coming soon",
   "panel.whoItsFor": "Who is this for?",
-  "panel.gain": "What you’ll gain",
+  "panel.gain": "What you'll gain",
   "panel.related": "Related learning",
   "panel.readMore": "Read more",
   "panel.rightForMe": "Is this right for me?",
@@ -109,7 +107,7 @@ const fr: Record<StringKey, string> = {
   "map.zoomIn": "Zoom avant",
   "map.zoomOut": "Zoom arrière",
   "map.reset": "Revenir au centre",
-  "map.bandDiplomas": "Diplômes accrédités",
+  "map.bandDiplomas": "Formations accréditées",
   "map.bandCore": "Formation essentielle",
   "map.bandRole": "Votre poste",
   "map.youAreHere": "Vous êtes ici",
@@ -140,7 +138,6 @@ const fr: Record<StringKey, string> = {
     "De combien de temps disposez-vous ? Choisissez un créneau pour voir les formations adaptées et démarrer à votre niveau.",
   "drawer.title": "Panneau de détail",
   "drawer.close": "Fermer",
-  "pq.kicker": "Pour personnaliser votre expérience",
   "managers.kicker": "Pour les managers",
   "managers.heading": "Accompagner votre équipe",
   "managers.sub":
@@ -190,7 +187,7 @@ const es: Record<StringKey, string> = {
   "map.zoomIn": "Acercar",
   "map.zoomOut": "Alejar",
   "map.reset": "Volver al centro",
-  "map.bandDiplomas": "Diplomas acreditados",
+  "map.bandDiplomas": "Formación acreditada",
   "map.bandCore": "Formación esencial",
   "map.bandRole": "Tu puesto",
   "map.youAreHere": "Estás aquí",
@@ -221,7 +218,6 @@ const es: Record<StringKey, string> = {
     "¿Cuánto tiempo tienes? Elige una franja para ver el aprendizaje que encaja y empezar en tu nivel.",
   "drawer.title": "Panel de detalle",
   "drawer.close": "Cerrar",
-  "pq.kicker": "Para personalizar tu experiencia",
   "managers.kicker": "Para managers",
   "managers.heading": "Apoyar a tu equipo",
   "managers.sub":
@@ -271,7 +267,7 @@ const ar: Record<StringKey, string> = {
   "map.zoomIn": "تكبير",
   "map.zoomOut": "تصغير",
   "map.reset": "العودة إلى المنتصف",
-  "map.bandDiplomas": "دبلومات معتمدة",
+  "map.bandDiplomas": "تعلّم معتمد",
   "map.bandCore": "التعلّم الأساسي",
   "map.bandRole": "دورك",
   "map.youAreHere": "أنت هنا",
@@ -301,7 +297,6 @@ const ar: Record<StringKey, string> = {
     "كم من الوقت لديك؟ اختر فترة لترى التعلّم المناسب ولتبدأ من مستواك.",
   "drawer.title": "لوحة التفاصيل",
   "drawer.close": "إغلاق",
-  "pq.kicker": "لنخصص تجربتك",
   "managers.kicker": "للمديرين",
   "managers.heading": "دعم فريقك",
   "managers.sub":

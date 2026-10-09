@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
-import type { ComponentType, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { BedDouble, Footprints, GraduationCap, MapPin } from "lucide-react";
 import RouteNode, {
   type RouteNodeState,
@@ -123,9 +123,6 @@ export default function MapCanvas({
   selectedProgrammeId,
   onSelectMapNode,
   openDrawer,
-  selectedPersonaId,
-  onSelectPersona,
-  PersonaQualifierComponent,
   aiFocus,
 }: {
   userContext: NavigatorUserContext | null;
@@ -138,12 +135,6 @@ export default function MapCanvas({
   selectedProgrammeId?: string | null;
   onSelectMapNode?: (nodeId: string) => void;
   openDrawer?: () => void;
-  selectedPersonaId?: string | null;
-  onSelectPersona?: (personaId: string) => void;
-  PersonaQualifierComponent?: ComponentType<{
-    selectedPersonaId: string | null;
-    onSelectPersona: (personaId: string) => void;
-  }>;
   aiFocus?: PathAiFocus | null;
 }) {
   const t = useT();
@@ -347,17 +338,6 @@ export default function MapCanvas({
   return (
     <div className="flex h-full min-h-0 w-full min-w-0 flex-col bg-card">
       <div className="relative flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden">
-        {!isMapActive && !selectedPersonaId && PersonaQualifierComponent && (
-          <div className="absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 justify-center p-6">
-            <div className="w-full max-w-md rounded-xl border bg-card/95 p-6 shadow-xl backdrop-blur-sm">
-              <PersonaQualifierComponent
-                selectedPersonaId={selectedPersonaId ?? null}
-                onSelectPersona={onSelectPersona ?? (() => {})}
-              />
-            </div>
-          </div>
-        )}
-
         {/*
          * The pyramid keeps a minimum readable width (tiles never drop below
          * ~72px) and lives inside a pannable/zoomable viewport, so on small
@@ -383,8 +363,7 @@ export default function MapCanvas({
           }
         >
         <div
-          className="relative mx-auto flex h-full w-full min-w-[760px] max-w-[1920px] flex-col justify-center px-3 py-6 transition-opacity duration-500 sm:px-6 md:min-w-0 md:py-7 lg:px-12 lg:py-8"
-          style={{ opacity: !isMapActive && !selectedPersonaId ? 0.3 : 1 }}
+          className="relative mx-auto flex h-full w-full min-w-[760px] max-w-[1920px] flex-col justify-center px-3 py-6 sm:px-6 md:min-w-0 md:py-7 lg:px-12 lg:py-8"
         >
           {/* Left axis: band titles (pyramid tiers), low contrast */}
           <div

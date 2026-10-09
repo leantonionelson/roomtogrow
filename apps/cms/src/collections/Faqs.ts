@@ -22,7 +22,10 @@ export const Faqs: CollectionConfig = {
       name: 'answer',
       type: 'textarea',
       localized: true,
-      admin: { description: 'FAQs without an answer are hidden on the page.' },
+      admin: {
+        description:
+          'FAQs without an answer are hidden on the page. Line breaks are kept; write links as [link text](https://…).',
+      },
     },
     {
       name: 'order',

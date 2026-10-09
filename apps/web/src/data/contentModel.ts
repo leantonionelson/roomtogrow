@@ -1,6 +1,6 @@
 /**
  * Static content model for the Room to Grow / Growth Navigator page.
- * Copy is from IHG's "Room to Grow Landing Page Content" sheet (Updated copy
+ * Copy is from IHG's "Room to Grow Landing Page Content V2" sheet (Updated copy
  * column); it doubles as the CMS seed and the offline fallback.
  */
 
@@ -29,7 +29,7 @@ import { MAP_CONNECTORS } from "./mapTopology";
 export { MAP_CONNECTORS } from "./mapTopology";
 
 export const strapline: Strapline = {
-  headline: "Your world of learning. IHG University.",
+  headline: "Leadership learning for every stage. IHG University.",
   intro:
     "IHG University offers practical, flexible leadership learning that’s open to all, no matter where you are now or where you’re heading.",
 };
@@ -40,7 +40,7 @@ export const strapline: Strapline = {
 export const introBlock: IntroBlock = {
   internalComms: "We believe great leaders aren't born – they're developed.",
   ihgUniversityExplanation:
-    "Our leadership learning programmes are designed to grow your skills at every stage of your career. Whether you're stepping into your first supervisory role or looking to develop the strategic thinking of a senior leader, IHG University offers a clear, connected pathway of learning, including eLearning programmes and accredited diplomas.",
+    "Our leadership learning programmes are designed to grow your skills at every stage of your career. Whether you're stepping into your first supervisory role or looking to develop the strategic thinking of a senior leader, IHG University offers a clear pathway of learning with the chance to achieve externally recognised accreditations.",
 };
 
 /**
@@ -99,9 +99,9 @@ export const sellingPoints: SellingPoint[] = [
  * "How to support development" column of the manager section.
  */
 export const managerGuidance = [
-  "Have regular one-to-one conversations about career goals and development.",
-  "Use the manager conversation guides included in each programme.",
-  "Recognise and celebrate learning milestones — completing a module is worth acknowledging.",
+  "Have regular one-to-one conversations about career goals and development",
+  "Use the manager conversation guides included in each programme",
+  "Recognise and celebrate learning milestones — completing a module is worth acknowledging",
   "Create space for your team to apply what they're learning on the job.",
 ];
 
@@ -109,9 +109,9 @@ export const managerGuidance = [
  * "Quick actions to take now" column of the manager section.
  */
 export const leaderActionSteps = [
-  "Share this page with a team member who's ready for their next step.",
-  "Ask 'What are you learning right now?' in your next team meeting.",
-  "Encourage colleagues to build a Diploma into their development plans.",
+  "Share this page with a team member who's ready for their next step",
+  "Ask 'What are you learning right now?' in your next team meeting",
+  "Encourage colleagues to build a Diploma into their development plans",
   "Set aside 20 minutes to explore the learning pathways together.",
 ];
 
@@ -160,7 +160,7 @@ export const roles: Role[] = [
     level: 4,
     label: "General Manager",
     overview:
-      "You set the vision, own the results and build the culture that makes your hotel exceptional. Your leadership touches every team member and every guest experience.",
+      "You set the vision, own the results and build the culture that makes your hotel exceptional. Your leadership influences every team member and every guest experience.",
     nextStep:
       "Expand your impact within IHG, whether that means working at a bigger hotel, a different brand, across multiple properties or in regional leadership.",
     resources: [
@@ -230,7 +230,9 @@ export const personaQualifyingQuestions: PersonaQualifyingQuestion[] = [
   },
 ];
 
-const CORE_SUGGESTION = "core pathway towards your next role.";
+const CORE_SUGGESTION = "pathway towards your next role.";
+const DIPLOMA_SUGGESTION =
+  "accredited qualification from the CTH (Confederation of Tourism and Hospitality).";
 
 /**
  * Each programme has `type`: "core" (Journey to... eLearning) or "advanced"
@@ -291,7 +293,7 @@ export const programmes: Programme[] = [
     levels: [3, 4],
     title: "Journey to General Manager",
     description:
-      "A focused learning playlist designed to prepare leaders for the most critical leadership role in a hotel.",
+      "A focused learning programme designed to prepare leaders for the most critical leadership role in a hotel.",
     suggestionLine: CORE_SUGGESTION,
     whoItsFor: "Experienced leaders wanting to prepare for a General Manager role.",
     outcomes:
@@ -308,7 +310,7 @@ export const programmes: Programme[] = [
     fullTitle: "Foundational Diploma of Hospitality Leadership (Level 3)",
     description:
       "An accredited, blended learning programme with six live virtual modules leading to an internationally recognised qualification.",
-    suggestionLine: "accredited qualification to develop leadership skills.",
+    suggestionLine: DIPLOMA_SUGGESTION,
     whoItsFor:
       "Supervisors in IHG hotels who are ready to deepen their leadership skills through structured, facilitated learning.",
     outcomes:
@@ -346,7 +348,7 @@ export const programmes: Programme[] = [
     fullTitle: "Diploma of Hospitality Leadership (Level 4)",
     description:
       "An accredited, blended learning qualification with six live virtual modules that take managers deeper into the leadership capabilities that drive hotel performance.",
-    suggestionLine: "accredited qualification to help you lead as a manager.",
+    suggestionLine: DIPLOMA_SUGGESTION,
     whoItsFor:
       "Managers in IHG hotels who are ready to formalise their leadership development and earn a recognised qualification.",
     outcomes:
@@ -385,10 +387,9 @@ export const programmes: Programme[] = [
     fullTitle: "Advanced Diploma of Hospitality Leadership (Level 5)",
     description:
       "An accredited learning programme to enable senior hospitality leaders to lead complex hotel operations and drive sustained business performance.",
-    suggestionLine:
-      "accredited qualification to elevate your leadership at a senior level.",
+    suggestionLine: DIPLOMA_SUGGESTION,
     whoItsFor:
-      "Heads of Departments, EXCOM, Directors or 2IC leaders who are ready to be tested in applying their leadership tools in real world hotel environments. You must have completed Journey to Senior Manager.",
+      "Heads of Departments, Senior Leaders and ExCom who are ready to be tested in applying their leadership tools in real world hotel environments. You must have completed Journey to Senior Manager.",
     outcomes:
       "An internationally recognised senior leadership qualification, building advanced capabilities in strategic thinking, commercial and operational leadership, leading through others, driving change, and influencing stakeholders — applied to the complex, real-world challenges of leading hotels at scale.",
     recommendation:
@@ -460,21 +461,22 @@ export const faqs: Faq[] = [
     question:
       "What's the difference between the Journey to... programmes and the Diplomas?",
     answer:
-      "Our Journey to... programmes are self-directed eLearning courses that allow you to build essential leadership skills at your own pace. The Diplomas are internationally recognised qualifications that include live instructor-led virtual sessions and assessments.",
+      "Our Journey to... programmes are self-directed eLearning courses that allow you to build essential leadership skills at your own pace. The Diplomas are internationally recognised qualifications that have a fee and include live instructor-led virtual sessions and assessments.",
   },
   {
-    // Placeholder answer: to be supplied by IHG.
+    // Advanced Diploma enrolment link to follow from IHG once it's available.
     id: "diploma_enrol",
     question: "How do I enrol in a Diploma programme?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+      "Once you have agreement from your Manager that they are willing to pay the certification fee and you can register for the course, you can sign up on IHG University:\n" +
+      "[Foundational Diploma of Hospitality Leadership](https://mylearning.sumtotal.host/core/viewPlaylistDetails/81122)\n" +
+      "[Diploma of Hospitality Leadership](https://mylearning.sumtotal.host/rcore/c/viewPlaylistDetails/138054)",
   },
   {
-    // Placeholder answer: to be supplied by IHG.
     id: "multiple_programmes",
     question: "Can I do more than one programme at the same time?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+      "To get the greatest value from your learning journey, we strongly recommend completing one course at a time. Focusing on a single learning experience allows you to fully absorb the content, build understanding at a deeper level and avoid splitting your attention across multiple topics. By taking the time to learn, reflect and apply new skills in your role before moving on to the next course, you'll achieve stronger results and create lasting behaviour change.",
   },
 ];
 
@@ -817,6 +819,20 @@ export function getNodeTitle(nodeId: string | null | undefined): string | null {
   return getProgrammeById(nodeId)?.title ?? getRoleById(nodeId)?.label ?? null;
 }
 
+/** Role a programme leads to on the map (its forward edge into a role). */
+export function getDestinationRoleForProgramme(
+  programmeId: string,
+  connectorList: MapConnector[] = MAP_CONNECTORS,
+): Role | null {
+  const outgoing = connectorList.find(
+    (c) =>
+      isForwardMapEdge(c.type) &&
+      c.fromId === programmeId &&
+      roles.some((r) => r.id === c.toId),
+  );
+  return outgoing ? getRoleById(outgoing.toId) : null;
+}
+
 /**
  * Deterministic “development case” copy for manager conversations (advanced programmes).
  * Uses only fields from the content model — no API or randomness.
@@ -833,7 +849,11 @@ export function buildDevelopmentCase({
   if (!programme) return null;
 
   const currentRole = currentRoleId ? getRoleById(currentRoleId) : null;
-  const nextRole = currentRoleId ? getNextRoleById(currentRoleId) : null;
+  // The programme's own destination, not the role after the user's: a
+  // Supervisor looking at the Advanced Diploma is working towards GM.
+  const nextRole =
+    getDestinationRoleForProgramme(programme.id) ??
+    (currentRoleId ? getNextRoleById(currentRoleId) : null);
   const currentLabel = currentRole?.label ?? "colleague";
   const nextLabel = nextRole?.label ?? "your next step";
 
