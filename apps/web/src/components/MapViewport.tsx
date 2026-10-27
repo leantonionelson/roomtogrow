@@ -58,8 +58,10 @@ export default function MapViewport({
     if (!vp || !ct) return next;
     const vw = vp.clientWidth;
     const vh = vp.clientHeight;
-    const cw = ct.offsetWidth * next.scale;
-    const ch = ct.offsetHeight * next.scale;
+    // scroll*, not offset*: the map can be wider than the frame (its min
+    // width), and the whole of it must be reachable.
+    const cw = ct.scrollWidth * next.scale;
+    const ch = ct.scrollHeight * next.scale;
     const minX = Math.min(vw - cw, 0) - OVERPAN;
     const maxX = Math.max(vw - cw, 0) + OVERPAN;
     const minY = Math.min(vh - ch, 0) - OVERPAN;
@@ -117,8 +119,8 @@ export default function MapViewport({
         });
       }
       return clampView({
-        x: (vw - ct.offsetWidth) / 2,
-        y: (vh - ct.offsetHeight) / 2,
+        x: (vw - ct.scrollWidth) / 2,
+        y: (vh - ct.scrollHeight) / 2,
         scale: 1,
       });
     });
@@ -205,7 +207,10 @@ export default function MapViewport({
     <div className="relative h-full min-h-0">
       <div
         ref={viewportRef}
-        className="touch-pan-y relative h-full w-full cursor-grab overflow-hidden active:cursor-grabbing"
+        // Size container from md: the map sizes its tiles from this frame's
+        // height. Not on phones, where the frame's height comes from the map
+        // itself (size containment would collapse it).
+        className="touch-pan-y relative h-full w-full cursor-grab overflow-hidden active:cursor-grabbing md:[container-type:size]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
@@ -227,7 +232,8 @@ export default function MapViewport({
         </div>
       </div>
 
-      <div className="absolute bottom-3 right-3 z-[5] flex flex-col gap-1.5">
+      {/* Top-right: the top tier leaves that corner empty at every size. */}
+      <div className="absolute right-3 top-3 z-[5] flex gap-1.5">
         <button type="button" aria-label={t("map.zoomIn")} className={controlClass} onClick={() => zoomBy(1.25)}>
           <Plus className="h-4 w-4" aria-hidden />
         </button>

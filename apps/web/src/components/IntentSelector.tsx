@@ -1,12 +1,16 @@
-import { ArrowRight, BookOpen, Compass, UsersRound } from "lucide-react";
+import { Fragment } from "react";
+import type { CSSProperties } from "react";
 import type { IntentValue } from "../types/content";
 import { useSiteContent, useT } from "../content/ContentProvider";
 import { Reveal } from "./motion";
+import { ShieldTileIcon } from "./brand/ShieldArt";
+import type { ShieldTile } from "./brand/ShieldArt";
 
-const INTENT_ICONS: Record<IntentValue, typeof Compass> = {
-  selfGrowth: Compass,
-  developingTeam: UsersRound,
-  learnAbout: BookOpen,
+/** Each intent owns a shield tile and an accent (design: "each has its own colour"). */
+const INTENT_STYLE: Record<IntentValue, { tile: ShieldTile; colour: string }> = {
+  selfGrowth: { tile: "person", colour: "var(--brand-orange)" },
+  developingTeam: { tile: "arch", colour: "var(--brand-blue)" },
+  learnAbout: { tile: "leaf", colour: "var(--brand-teal)" },
 };
 
 export default function IntentSelector({
@@ -18,56 +22,53 @@ export default function IntentSelector({
   const t = useT();
   return (
     <section
-      className="border-b bg-background px-4 py-14 md:py-16"
+      className="bg-background px-4 py-16 md:py-24"
       aria-labelledby="intent-selector-heading"
     >
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <Reveal>
           <h2
             id="intent-selector-heading"
-            className="text-center text-2xl font-semibold tracking-tight text-foreground md:text-3xl"
+            className="text-center text-2xl font-normal text-primary md:text-[2rem]"
           >
             {intentSelector.question}
           </h2>
-          <p className="mt-3 text-center text-sm text-muted-foreground md:text-base">
+          <p className="mt-3 text-center text-sm text-muted-foreground">
             {intentSelector.microcopy}
           </p>
         </Reveal>
 
-        <div
-          className={`mx-auto mt-10 grid gap-4 ${
-            intentSelector.options.length === 2
-              ? "max-w-2xl sm:grid-cols-2"
-              : "sm:grid-cols-3"
-          }`}
-        >
-          {intentSelector.options.map((opt, i) => {
-            const Icon = INTENT_ICONS[opt.value] ?? Compass;
-            return (
-              <Reveal key={opt.value} delay={i * 110}>
-                <button
-                  type="button"
-                  onClick={() => onSelectIntent(opt.value)}
-                  className="group flex h-full w-full flex-col items-start gap-4 rounded-2xl border bg-card p-5 text-left shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-muted text-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
-                    <Icon className="h-5 w-5" aria-hidden />
-                  </span>
-                  <span className="flex-1 text-sm font-medium leading-snug text-foreground">
-                    {opt.label}
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-muted/70 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                    {t("intent.getStarted")}
-                    <ArrowRight
-                      className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 rtl:rotate-180"
+        <Reveal delay={120}>
+          <div className="mt-12 flex flex-col items-stretch justify-center gap-6 sm:flex-row sm:gap-0">
+            {intentSelector.options.map((opt, i) => {
+              const style = INTENT_STYLE[opt.value] ?? INTENT_STYLE.selfGrowth;
+              return (
+                <Fragment key={opt.value}>
+                  {i > 0 && (
+                    <span
+                      className="hidden w-px self-stretch bg-primary/60 sm:block"
                       aria-hidden
                     />
-                  </span>
-                </button>
-              </Reveal>
-            );
-          })}
-        </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => onSelectIntent(opt.value)}
+                    style={{ "--intent": style.colour } as CSSProperties}
+                    className="group flex items-start gap-4 rounded-xl px-4 py-2 text-start text-brand-gray transition-colors duration-300 hover:text-(--intent) focus-visible:text-(--intent) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-w-56 sm:px-8 md:px-10 [@media(hover:none)]:text-(--intent)"
+                  >
+                    <ShieldTileIcon tile={style.tile} className="h-14 w-auto shrink-0" />
+                    <span className="flex flex-col items-start gap-3 pt-1">
+                      <span className="max-w-40 text-sm leading-snug">{opt.label}</span>
+                      <span className="translate-y-1 rounded-full bg-(--intent) px-3.5 py-1 text-xs font-medium text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100">
+                        {t("intent.getStarted")}
+                      </span>
+                    </span>
+                  </button>
+                </Fragment>
+              );
+            })}
+          </div>
+        </Reveal>
       </div>
     </section>
   );

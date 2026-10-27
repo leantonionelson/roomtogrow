@@ -1,7 +1,6 @@
 /**
  * Domain types for the Room to Grow / Growth Navigator content model.
- * These mirror the Payload CMS collections and globals; the static fallback
- * content and the CMS fetch layer both conform to these shapes.
+ * `data/contentModel.ts` supplies values in these shapes.
  */
 
 /** Map interaction mode: immediate learning vs next-step exploration. */
@@ -157,6 +156,12 @@ export interface PathAiConfig {
 export interface UserContext {
   currentRoleId: string | null;
   mapMode?: MapMode;
+  /**
+   * True when the role was inferred from a programme because the visitor
+   * hasn't chosen one: it anchors the route on the map but is never shown
+   * as "You are here" or used to describe the visitor.
+   */
+  roleInferred?: boolean;
 }
 
 /** Derived path model for map highlighting and connector styling. */
@@ -183,8 +188,7 @@ export interface DevelopmentCase {
 }
 
 /**
- * The complete content bundle the UI renders from.
- * Served by the CMS; the static fallback provides the same shape.
+ * The complete content bundle the UI renders from (see content/siteContent.ts).
  */
 export interface SiteContent {
   strapline: Strapline;

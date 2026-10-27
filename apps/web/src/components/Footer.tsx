@@ -1,35 +1,27 @@
-import { Sprout } from "lucide-react";
 import { useT } from "../content/ContentProvider";
+import IhgUniversityLogo from "./brand/IhgUniversityLogo";
 
 export default function Footer() {
   const t = useT();
   return (
-    <footer className="border-t bg-background px-4 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Sprout className="h-4 w-4" aria-hidden />
-          </span>
-          <div className="leading-tight">
-            <p className="text-sm font-semibold text-foreground">Room to Grow</p>
-            <p className="text-xs text-muted-foreground">IHG University</p>
-          </div>
-        </div>
+    <footer className="bg-brand-navy px-4 py-10 text-white">
+      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center sm:px-2 lg:px-4">
+        <IhgUniversityLogo className="h-7 w-auto" />
 
         <nav
-          className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground"
+          className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85"
           aria-label="Footer"
         >
-          <a href="#faq" className="transition-colors hover:text-foreground">
+          <a href="#faq" className="transition-colors hover:text-white">
             {t("footer.faq")}
           </a>
-          <a href="#accessibility" className="transition-colors hover:text-foreground">
+          <a href="#accessibility" className="transition-colors hover:text-white">
             {t("footer.accessibility")}
           </a>
-          <a href="#privacy" className="transition-colors hover:text-foreground">
+          <a href="#privacy" className="transition-colors hover:text-white">
             {t("footer.privacy")}
           </a>
-          <a href="#legal" className="transition-colors hover:text-foreground">
+          <a href="#legal" className="transition-colors hover:text-white">
             {t("footer.legal")}
           </a>
         </nav>

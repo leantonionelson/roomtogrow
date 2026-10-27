@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
-import film1 from "../assets/film/film-1.jpg";
-import film2 from "../assets/film/film-2.jpg";
-import film3 from "../assets/film/film-3.jpg";
+import lounge from "../assets/brand/portraits/lounge.jpg";
+import reception from "../assets/brand/portraits/reception.jpg";
+import meeting from "../assets/brand/portraits/meeting.jpg";
+import colleagueSmile from "../assets/brand/colleague-smile.jpg";
+import hero from "../assets/brand/hero.jpg";
 
-const HERO_IMAGES = [film1, film2, film3];
+const HERO_IMAGES = [lounge, reception, meeting, colleagueSmile, hero];
 
 /** Deterministic hero per node, so a given place always looks the same. */
 export function heroForId(id: string): string {
@@ -33,6 +35,7 @@ export default function PanelShell({
   heroImage,
   heroIcon,
   accent = "primary",
+  variant = "place",
   onClose,
   tabs,
   children,
@@ -45,6 +48,11 @@ export default function PanelShell({
   heroIcon?: ReactNode;
   /** Tints the hero scrim and marker chip. */
   accent?: "primary" | "orange";
+  /**
+   * "place" = maps-style card with a photo hero; "intro" = the design's
+   * "Start here" panel: no photo, large title straight on the textile.
+   */
+  variant?: "place" | "intro";
   onClose?: () => void;
   /** When present, renders a tab bar; otherwise `children` is the body. */
   tabs?: PanelTab[];
@@ -79,6 +87,34 @@ export default function PanelShell({
     accent === "orange"
       ? "linear-gradient(to top, rgba(120,38,14,0.92), rgba(232,84,44,0.35) 60%, rgba(232,84,44,0.12))"
       : "linear-gradient(to top, rgba(16,32,40,0.92), rgba(31,68,86,0.42) 60%, rgba(31,68,86,0.15))";
+
+  if (variant === "intro") {
+    return (
+      <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl bg-white/55 ring-1 ring-white/70 backdrop-blur-sm">
+        <div className="relative shrink-0 px-5 pb-2 pt-6">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-foreground transition-colors hover:bg-white"
+            >
+              <X className="h-4 w-4" aria-hidden />
+            </button>
+          )}
+          <h3 className="font-heading text-2xl font-normal text-primary [font-stretch:125%]">
+            {title}
+          </h3>
+          {subtitle && (
+            <p className="mt-2 text-xs leading-relaxed text-foreground/75">{subtitle}</p>
+          )}
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 pt-3 [&>*]:shrink-0">
+          {children}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-sm">

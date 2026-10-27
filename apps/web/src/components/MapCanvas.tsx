@@ -30,7 +30,22 @@ import {
  */
 /** `minmax(0,1fr)` lets columns shrink so tiles + gaps fit the container width. */
 const PYRAMID_GRID =
-  "grid min-w-0 w-full grid-cols-[repeat(9,minmax(0,1fr))] gap-x-1 sm:gap-x-2 md:gap-x-3 lg:gap-x-4 xl:gap-x-6";
+  "grid min-w-0 w-full grid-cols-[repeat(9,minmax(0,1fr))] gap-x-1 sm:gap-x-2 md:gap-x-3";
+
+/** Tier dividers. */
+const DIVIDER_INSET = "mx-2 md:mx-6";
+/** Each tier's band label sits above it, so the tiles get the full width. */
+const BAND_LABEL =
+  "pointer-events-none z-[3] mb-1.5 inline-block rounded-md px-1.5 py-1 text-[9px] font-semibold uppercase leading-snug tracking-wider sm:text-[10px]";
+
+/**
+ * Tiles are square and sized by column width, capped by the frame height so
+ * all three tiers fit on wide-but-short frames. 19.5rem ≈ everything in the
+ * map's height that isn't a tile (padding, labels, dividers, minimum gaps).
+ * `cqh` is the map viewport's height (a size container from md; on phones it
+ * falls back to the screen height, which leaves the width in charge).
+ */
+const TILE_MAX_W = "max-w-[max(4rem,calc((100cqh-19.5rem)/3))]";
 
 const DIPLOMA_PLACEMENT = [
   { id: "hospitality_diploma_3", col: 3 },
@@ -141,8 +156,10 @@ export default function MapCanvas({
   const isMapActive = userContext != null;
   const mapMode = userContext?.mapMode ?? MAP_MODE.startNow;
   const isExploreNext = mapMode === MAP_MODE.exploreNext;
-  const pastRoleIds = userContext?.currentRoleId
-    ? new Set(getPastRoleIds(userContext.currentRoleId))
+  /** The visitor's own role; an inferred route anchor doesn't count. */
+  const chosenRoleId = userContext?.roleInferred ? null : (userContext?.currentRoleId ?? null);
+  const pastRoleIds = chosenRoleId
+    ? new Set(getPastRoleIds(chosenRoleId))
     : new Set<string>();
 
   const aiFocusNodeIds = new Set(aiFocus?.nodeIds ?? []);
@@ -209,7 +226,7 @@ export default function MapCanvas({
     const isSelected =
       selectedNodeId === nodeId || selectedProgrammeId === nodeId;
     const isRelevant = highlightedNodeSet.has(nodeId);
-    const isCurrentRole = userContext?.currentRoleId === nodeId;
+    const isCurrentRole = chosenRoleId === nodeId;
     const isDiplomaNode = nodeId.startsWith("hospitality_diploma");
     const isAiFocusNode = aiFocusNodeIds.has(nodeId);
     const isSoftDiplomaSuggest =
@@ -258,7 +275,7 @@ export default function MapCanvas({
 
     const cardRing =
       isSelected || isAiFocusNode
-        ? "ring-2 ring-primary shadow-md"
+        ? "ring-2 ring-brand-orange shadow-md"
         : isSoftDiplomaSuggest
           ? "ring-1 ring-ring border border-dashed border-ring"
           : "border-border";
@@ -272,11 +289,11 @@ export default function MapCanvas({
       <div
         key={nodeId}
         data-map-node={nodeId}
-        className={`relative flex w-full min-w-0 flex-col items-stretch transition-all duration-300 ${nodeOpacity} ${isSelected ? "z-10" : "z-0"}`}
+        className={`relative flex w-full min-w-0 ${TILE_MAX_W} flex-col items-stretch transition-all duration-300 ${nodeOpacity} ${isSelected ? "z-10" : "z-0"}`}
       >
         {isCurrentRole && isMapActive && (
           <div
-            className="pointer-events-none absolute -top-2.5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-orange-600 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white shadow-md sm:text-[10px]"
+            className="pointer-events-none absolute -top-2.5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full bg-brand-orange px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white shadow-md sm:text-[10px]"
             aria-hidden
           >
             <MapPin className="h-2.5 w-2.5" aria-hidden />
@@ -345,8 +362,8 @@ export default function MapCanvas({
          */}
         <MapViewport
           focusSelector={
-            userContext?.currentRoleId
-              ? `[data-map-node="${userContext.currentRoleId}"]`
+            chosenRoleId
+              ? `[data-map-node="${chosenRoleId}"]`
               : undefined
           }
           background={
@@ -363,29 +380,15 @@ export default function MapCanvas({
           }
         >
         <div
-          className="relative mx-auto flex h-full w-full min-w-[760px] max-w-[1920px] flex-col justify-center px-3 py-6 sm:px-6 md:min-w-0 md:py-7 lg:px-12 lg:py-8"
+          // min-w at every size: wherever the frame is narrower than this
+          // (phones, tablets, small laptops beside the panel) tiles keep a
+          // readable size and the map pans instead of shrinking. Bottom
+          // padding clears the pan/zoom hint in the corner.
+          className="relative mx-auto flex h-full w-full min-w-[760px] max-w-[1920px] flex-col justify-center px-3 pb-11 pt-6 sm:px-5 lg:px-8"
         >
-          {/* Left axis: band titles (pyramid tiers), low contrast */}
-          <div
-            className="pointer-events-none absolute bottom-28 left-3 top-10 z-[3] flex w-[6.5rem] flex-col justify-between text-[9px] font-semibold uppercase leading-snug tracking-wider sm:left-5 sm:w-36 sm:text-[10px] md:bottom-32 md:w-40 md:py-2"
-            aria-hidden
-          >
-            <span className="max-w-[6.5rem] rounded-md bg-orange-100/80 px-1.5 py-1 text-orange-800 sm:max-w-none">
-              {t("map.bandDiplomas")}
-            </span>
-            <span className="max-w-[6.5rem] rounded-md bg-primary/10 px-1.5 py-1 text-primary sm:max-w-none">
-              {t("map.bandCore")}
-            </span>
-            <span className="max-w-[6.5rem] rounded-md bg-muted px-1.5 py-1 text-muted-foreground sm:max-w-none">
-              {t("map.bandRole")}
-            </span>
-          </div>
-
-          {/* Ref on padded content so anchor math matches SVG (same coordinate origin). */}
-          <div
-            ref={mapRef}
-            className="relative flex min-w-0 flex-col pl-12 sm:pl-16 md:pl-20 lg:pl-28"
-          >
+          {/* Ref on the map content so anchor math matches SVG (same coordinate
+              origin). It grows to the frame height so the tiers spread out. */}
+          <div ref={mapRef} className="relative flex min-w-0 flex-1 flex-col">
           <svg className="pointer-events-none absolute inset-0 z-[1] h-full min-h-full w-full overflow-visible">
             <defs>
               <marker
@@ -454,11 +457,12 @@ export default function MapCanvas({
                     : "url(#arrowhead-blue)";
                 animateDash = true;
               } else if (isActive) {
-                stroke = type === "diplomaPath" ? "#e8542c" : "#1f4456";
+                // Chosen route: Signature Orange dashes (design "interactive state").
+                stroke = "#e8542c";
                 strokeOpacity = isMapActive ? 0.95 : 0.6;
-                strokeWidth = type === "diplomaPath" ? 2.6 : 3;
-                strokeDasharray = "none";
-                markerEndUrl = "url(#arrowhead-relevant)";
+                strokeWidth = type === "diplomaPath" ? 2.2 : 2.4;
+                strokeDasharray = "5 4";
+                markerEndUrl = "url(#arrowhead-blue)";
               } else if (isHighlightedTier) {
                 stroke = type === "diplomaPath" ? "#ef8666" : "#4b5563";
                 strokeOpacity = isMapActive ? 0.55 : 0.38;
@@ -527,46 +531,53 @@ export default function MapCanvas({
             })}
           </svg>
 
-          <div className="relative z-[2] flex flex-col gap-6 md:gap-8 lg:gap-10">
+          {/* Tiers spread across the frame height (gap is the minimum when
+              the frame is short); each carries its band label in the gutter. */}
+          <div className="relative z-[2] flex flex-1 flex-col justify-between gap-6 md:gap-8">
             {/* Top tier: 3 accredited diplomas */}
-            <div className={`${PYRAMID_GRID} shrink-0 items-end`}>
-              {DIPLOMA_PLACEMENT.map(({ id, col }) => (
-                <PyramidSlot key={id} colStart={col} align="end">
-                  {renderMapNode(id)}
-                </PyramidSlot>
-              ))}
+            <div className="relative">
+              <span className={`${BAND_LABEL} bg-orange-100/80 text-orange-800`} aria-hidden>
+                {t("map.bandDiplomas")}
+              </span>
+              <div className={`${PYRAMID_GRID} shrink-0 items-end`}>
+                {DIPLOMA_PLACEMENT.map(({ id, col }) => (
+                  <PyramidSlot key={id} colStart={col} align="end">
+                    {renderMapNode(id)}
+                  </PyramidSlot>
+                ))}
+              </div>
             </div>
 
-            <div
-              className="mx-2 shrink-0 border-t border-gray-300/80 md:mx-6"
-              aria-hidden
-            />
+            <div className={`${DIVIDER_INSET} shrink-0 border-t border-gray-300/80`} aria-hidden />
 
             {/* Middle tier: 4 journey steps */}
-            <div
-              className={`${PYRAMID_GRID} shrink-0 items-center py-2 md:py-3`}
-            >
-              {JOURNEY_PLACEMENT.map(({ id, col }) => (
-                <PyramidSlot key={id} colStart={col}>
-                  {renderMapNode(id)}
-                </PyramidSlot>
-              ))}
+            <div className="relative">
+              <span className={`${BAND_LABEL} bg-primary/10 text-primary`} aria-hidden>
+                {t("map.bandCore")}
+              </span>
+              <div className={`${PYRAMID_GRID} shrink-0 items-center py-2 md:py-3`}>
+                {JOURNEY_PLACEMENT.map(({ id, col }) => (
+                  <PyramidSlot key={id} colStart={col}>
+                    {renderMapNode(id)}
+                  </PyramidSlot>
+                ))}
+              </div>
             </div>
 
-            <div
-              className="mx-2 shrink-0 border-t border-gray-300/80 md:mx-6"
-              aria-hidden
-            />
+            <div className={`${DIVIDER_INSET} shrink-0 border-t border-gray-300/80`} aria-hidden />
 
             {/* Base tier: 5 hotel roles */}
-            <div
-              className={`${PYRAMID_GRID} shrink-0 items-end pt-1 md:pt-2`}
-            >
-              {ROLE_PLACEMENT.map(({ id, col }) => (
-                <PyramidSlot key={id} colStart={col} align="end">
-                  {renderMapNode(id)}
-                </PyramidSlot>
-              ))}
+            <div className="relative">
+              <span className={`${BAND_LABEL} bg-muted text-muted-foreground`} aria-hidden>
+                {t("map.bandRole")}
+              </span>
+              <div className={`${PYRAMID_GRID} shrink-0 items-end pt-1 md:pt-2`}>
+                {ROLE_PLACEMENT.map(({ id, col }) => (
+                  <PyramidSlot key={id} colStart={col} align="end">
+                    {renderMapNode(id)}
+                  </PyramidSlot>
+                ))}
+              </div>
             </div>
           </div>
           </div>

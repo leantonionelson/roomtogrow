@@ -74,9 +74,30 @@ function MapNavButton({
   isActive?: boolean;
   onActivate?: ActivateNode;
   title?: string;
-  variant?: "default" | "diploma";
+  /** "row" = icon + label list item with a rule, for the Start here panel. */
+  variant?: "default" | "diploma" | "row";
 }) {
   const isDiploma = variant === "diploma";
+  if (variant === "row") {
+    return (
+      <button
+        type="button"
+        title={title ?? label}
+        onClick={() => onActivate?.(nodeId)}
+        className={`flex w-full items-center gap-3 border-b py-2.5 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          isActive
+            ? "border-brand-orange font-medium text-foreground"
+            : "border-foreground/25 text-foreground hover:border-foreground/60"
+        }`}
+      >
+        <BedDouble
+          className={`h-4.5 w-4.5 shrink-0 ${isActive ? "text-brand-orange" : "text-primary"}`}
+          aria-hidden
+        />
+        {label}
+      </button>
+    );
+  }
   return (
     <button
       type="button"
@@ -255,7 +276,10 @@ function RelatedLearning({
   onActivateNode?: ActivateNode;
 }) {
   const t = useT();
+  // IHG's sheet lists each programme among its own related learning; a link
+  // to the panel you're already on goes nowhere, so it's left out.
   const related = programme.relatedProgrammeIds
+    .filter((id) => id !== programme.id)
     .map((id) => getProgrammeById(id))
     .filter((p): p is Programme => Boolean(p));
   if (related.length === 0 && programme.resources.length === 0) return null;
@@ -559,7 +583,8 @@ function AdvancedProgrammePanel({
             setDevelopmentCase(
               buildDevelopmentCase({
                 programme,
-                currentRoleId: userContext?.currentRoleId,
+                // Only describe the visitor by a role they chose.
+                currentRoleId: userContext?.roleInferred ? null : userContext?.currentRoleId,
                 selectedPersonaId:
                   userContext?.selectedPersonaId ?? selectedPersonaId,
               }),
@@ -627,7 +652,6 @@ export default function RoutePanel({
   selectedProgrammeId,
   userContext,
   selectedPersonaId,
-  leaderMode: _leaderMode,
   onClose,
   onActivateNode,
   onAiFocusChange: _onAiFocusChange,
@@ -636,7 +660,6 @@ export default function RoutePanel({
   selectedStoryId?: string | null;
   userContext: NavigatorUserContext | null;
   selectedPersonaId?: string | null;
-  leaderMode?: boolean;
   onClose?: () => void;
   onActivateNode?: ActivateNode;
   onAiFocusChange?: (focus: PathAiFocus | null) => void;
@@ -757,7 +780,7 @@ function EmptyPanel({
   onActivateNode?: ActivateNode;
 }) {
   const t = useT();
-  const anchorRoleId = userContext?.currentRoleId ?? null;
+  const anchorRoleId = userContext?.roleInferred ? null : (userContext?.currentRoleId ?? null);
   const journeyId = anchorRoleId ? getCoreJourneyForRole(anchorRoleId) : null;
   const diplomaId = anchorRoleId ? getDiplomaForRole(anchorRoleId) : null;
   const journeyProg = journeyId ? getProgrammeById(journeyId) : null;
@@ -765,6 +788,7 @@ function EmptyPanel({
 
   return (
     <PanelShell
+      variant={anchorRoleId ? "place" : "intro"}
       eyebrow={t("navigator.heading")}
       title={t("panel.startHere")}
       subtitle={anchorRoleId ? t("panel.emptyWithRole") : t("panel.emptyNoRole")}
@@ -776,11 +800,11 @@ function EmptyPanel({
       {onActivateNode && (
         <>
           {!anchorRoleId ? (
-            <div className="space-y-2">
-              <p className="text-xs font-semibold text-foreground">{t("map.bandRole")}</p>
-              <div className="flex flex-col gap-2">
+            <div>
+              <div className="flex flex-col">
                 {roles.map((r) => (
                   <MapNavButton
+                    variant="row"
                     key={r.id}
                     nodeId={r.id}
                     label={r.label}

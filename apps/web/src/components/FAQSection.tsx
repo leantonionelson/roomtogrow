@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Minus, Plus } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -36,37 +37,46 @@ function AnswerText({ text }: { text: string }) {
 export default function FAQSection() {
   const { faqs } = useSiteContent();
   const t = useT();
+  const answered = faqs.filter((faq) => faq.answer.trim());
   return (
-    <section id="faq" className="bg-muted/40 px-4 py-16 md:py-20">
-      <div className="mx-auto max-w-2xl">
+    // On desktop the band starts inside the section above (its FAQ strip), so
+    // the top padding here is reduced to keep ~96px before the heading.
+    <section id="faq" className="bg-muted px-4 pb-16 pt-16 md:pb-24 md:pt-10">
+      <div className="mx-auto max-w-xl">
         <Reveal>
-          <div className="text-center">
-            <span className="rounded-full bg-background px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground shadow-xs">
-              {t("faq.kicker")}
-            </span>
-            <h2 className="text-gradient-brand mt-4 text-2xl font-semibold tracking-tight md:text-3xl">
-              {t("faq.heading")}
-            </h2>
-          </div>
+          <h2 className="text-center text-2xl font-normal text-primary md:text-[2rem]">
+            {t("faq.heading")}
+          </h2>
         </Reveal>
         <Reveal delay={140}>
-          <Accordion type="single" collapsible className="mt-8 gap-2.5">
-            {faqs
-              .filter((faq) => faq.answer.trim())
-              .map((faq) => (
-                <AccordionItem
-                  key={faq.id}
-                  value={faq.id}
-                  className="rounded-2xl border bg-card px-5 shadow-xs transition-shadow hover:shadow-md"
-                >
-                  <AccordionTrigger className="py-4 text-sm font-medium text-foreground">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
-                    <AnswerText text={faq.answer} />
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue={answered[0]?.id}
+            className="mt-12"
+          >
+            {answered.map((faq) => (
+              <AccordionItem
+                key={faq.id}
+                value={faq.id}
+                className="border-b border-primary/70 last:border-b-0"
+              >
+                <AccordionTrigger className="items-center justify-center gap-3 py-4 text-center text-sm font-semibold text-foreground hover:no-underline hover:text-primary **:data-[slot=accordion-trigger-icon]:hidden">
+                  <span>{faq.question}</span>
+                  {/* Plus / minus marks each question as expandable. */}
+                  <span
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary/40 text-primary transition-colors group-hover/accordion-trigger:border-primary group-aria-expanded/accordion-trigger:border-primary group-aria-expanded/accordion-trigger:bg-primary group-aria-expanded/accordion-trigger:text-primary-foreground"
+                    aria-hidden
+                  >
+                    <Plus className="h-3.5 w-3.5 group-aria-expanded/accordion-trigger:hidden" />
+                    <Minus className="hidden h-3.5 w-3.5 group-aria-expanded/accordion-trigger:block" />
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="pb-5 text-center text-sm leading-relaxed text-foreground/80">
+                  <AnswerText text={faq.answer} />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
           </Accordion>
         </Reveal>
       </div>

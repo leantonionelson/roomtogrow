@@ -1,6 +1,6 @@
 /**
  * UI chrome strings (buttons, labels, section furniture) in all supported
- * locales. Campaign content itself comes localized from the CMS.
+ * locales. Campaign content itself (data/contentModel.ts) is English only.
  *
  * English labels follow IHG's "Room to Grow Landing Page Content" sheet.
  * NOTE: fr/es/ar values are working drafts — to be reviewed/replaced by the
@@ -23,44 +23,46 @@ const en = {
   "nav.faq": "FAQ",
   "nav.openNavigator": "Open the Navigator",
 
-  "hero.badge": "IHG University · Room to Grow",
   "hero.watchFilm": "Watch the film",
+  "hero.pauseBackground": "Pause background video",
+  "hero.playBackground": "Play background video",
+  "film.close": "Close film",
+  "film.play": "Play",
+  "film.pause": "Pause",
+  "film.mute": "Mute",
+  "film.unmute": "Unmute",
+  "film.progress": "Film progress",
 
   "intent.getStarted": "Get started",
 
-  "about.kicker": "About IHG University",
 
   "selling.heading": "Why invest your time with IHG University?",
   "selling.subheading":
     "Our leadership learning programmes are built to work around you.",
-  "selling.prev": "Previous",
-  "selling.next": "Next",
 
-  "navigator.kicker": "Interactive map",
   "navigator.heading": "Find your career path",
   "navigator.sub":
     "Select your current role to explore recommended programmes and next steps.",
-  "navigator.searchFilters": "Search & filters",
+  "navigator.chooseRole": "Choose your role",
   "navigator.tailored": "Tailored for you",
   "navigator.change": "Change",
 
   "controls.currentRole": "Current role...",
   "controls.explainer":
-    "Use the map to explore your next step. After you choose a current role, picking a time below applies start learning now for that role.",
-  "controls.timeQuestion":
-    "How much time do you have? Pick a slot to see learning that fits and to start at your level.",
+    "Choose your current role to see your options, or tap any step on the map.",
 
   "drawer.title": "Detail panel",
   "drawer.close": "Close",
 
-  "managers.kicker": "For managers",
   "managers.heading": "Supporting your team",
   "managers.sub":
     "As a manager, you play a vital role in helping your team grow. Here's how you can support your colleagues to make the most of IHG's leadership learning programmes.",
   "managers.col1": "How to support development",
   "managers.col2": "Quick actions to take now",
+  "managers.step": "Step",
+  "managers.share": "Share this page",
+  "managers.copied": "Link copied",
 
-  "faq.kicker": "Need a hand?",
   "faq.heading": "Frequently asked questions",
 
   "footer.faq": "FAQ",
@@ -95,9 +97,9 @@ const en = {
   "panel.startHere": "Where are you in your journey?",
   "panel.tabOverview": "Overview",
   "panel.emptyWithRole":
-    "Open a progress path below, or choose a different role from the map or filters.",
+    "Open a progress path below, or choose a different role from the map.",
   "panel.emptyNoRole":
-    "Pick your hotel role below to see progress options, or use the map or filters.",
+    "Pick your hotel role below to see progress options, or use the map.",
 } as const;
 
 export type StringKey = keyof typeof en;
@@ -115,36 +117,38 @@ const fr: Record<StringKey, string> = {
   "map.optional": "Facultatif",
   "nav.faq": "FAQ",
   "nav.openNavigator": "Ouvrir le Navigator",
-  "hero.badge": "IHG University · Room to Grow",
   "hero.watchFilm": "Voir le film",
+  "hero.pauseBackground": "Mettre en pause la vidéo d’arrière-plan",
+  "hero.playBackground": "Lire la vidéo d’arrière-plan",
+  "film.close": "Fermer le film",
+  "film.play": "Lecture",
+  "film.pause": "Pause",
+  "film.mute": "Couper le son",
+  "film.unmute": "Activer le son",
+  "film.progress": "Progression du film",
   "intent.getStarted": "Commencer",
-  "about.kicker": "À propos d’IHG University",
   "selling.heading": "Pourquoi investir votre temps avec IHG University ?",
   "selling.subheading":
     "Nos programmes de développement du leadership s’adaptent à vous.",
-  "selling.prev": "Précédent",
-  "selling.next": "Suivant",
-  "navigator.kicker": "Carte interactive",
   "navigator.heading": "Trouvez votre parcours de carrière",
   "navigator.sub":
     "Sélectionnez votre poste actuel pour découvrir les programmes recommandés et vos prochaines étapes.",
-  "navigator.searchFilters": "Recherche et filtres",
+  "navigator.chooseRole": "Choisir votre poste",
   "navigator.tailored": "Personnalisé pour vous",
   "navigator.change": "Modifier",
   "controls.currentRole": "Poste actuel...",
   "controls.explainer":
-    "Utilisez la carte pour explorer votre prochaine étape. Après avoir choisi votre poste, sélectionnez un créneau ci-dessous pour commencer à apprendre dès maintenant.",
-  "controls.timeQuestion":
-    "De combien de temps disposez-vous ? Choisissez un créneau pour voir les formations adaptées et démarrer à votre niveau.",
+    "Choisissez votre poste actuel pour voir vos options, ou touchez une étape sur la carte.",
   "drawer.title": "Panneau de détail",
   "drawer.close": "Fermer",
-  "managers.kicker": "Pour les managers",
   "managers.heading": "Accompagner votre équipe",
   "managers.sub":
     "En tant que manager, vous jouez un rôle essentiel dans le développement de votre équipe. Voici comment aider vos collègues à tirer le meilleur parti des programmes de leadership d’IHG.",
   "managers.col1": "Comment soutenir le développement",
   "managers.col2": "Actions rapides à mener dès maintenant",
-  "faq.kicker": "Besoin d’aide ?",
+  "managers.step": "Étape",
+  "managers.share": "Partager cette page",
+  "managers.copied": "Lien copié",
   "faq.heading": "Questions fréquentes",
   "footer.faq": "FAQ",
   "footer.accessibility": "Accessibilité",
@@ -177,9 +181,9 @@ const fr: Record<StringKey, string> = {
   "panel.startHere": "Où en êtes-vous dans votre parcours ?",
   "panel.tabOverview": "Aperçu",
   "panel.emptyWithRole":
-    "Ouvrez un parcours ci-dessous, ou choisissez un autre poste sur la carte ou via les filtres.",
+    "Ouvrez un parcours ci-dessous, ou choisissez un autre poste sur la carte.",
   "panel.emptyNoRole":
-    "Choisissez votre poste ci-dessous pour voir vos options de progression, ou utilisez la carte ou les filtres.",
+    "Choisissez votre poste ci-dessous pour voir vos options de progression, ou utilisez la carte.",
 };
 
 const es: Record<StringKey, string> = {
@@ -195,36 +199,38 @@ const es: Record<StringKey, string> = {
   "map.optional": "Opcional",
   "nav.faq": "FAQ",
   "nav.openNavigator": "Abrir el Navigator",
-  "hero.badge": "IHG University · Room to Grow",
   "hero.watchFilm": "Ver el vídeo",
+  "hero.pauseBackground": "Pausar el vídeo de fondo",
+  "hero.playBackground": "Reproducir el vídeo de fondo",
+  "film.close": "Cerrar el vídeo",
+  "film.play": "Reproducir",
+  "film.pause": "Pausa",
+  "film.mute": "Silenciar",
+  "film.unmute": "Activar sonido",
+  "film.progress": "Progreso del vídeo",
   "intent.getStarted": "Empezar",
-  "about.kicker": "Sobre IHG University",
   "selling.heading": "¿Por qué invertir tu tiempo en IHG University?",
   "selling.subheading":
     "Nuestros programas de liderazgo están pensados para adaptarse a ti.",
-  "selling.prev": "Anterior",
-  "selling.next": "Siguiente",
-  "navigator.kicker": "Mapa interactivo",
   "navigator.heading": "Encuentra tu camino profesional",
   "navigator.sub":
     "Selecciona tu puesto actual para ver los programas recomendados y tus próximos pasos.",
-  "navigator.searchFilters": "Búsqueda y filtros",
+  "navigator.chooseRole": "Elige tu puesto",
   "navigator.tailored": "Personalizado para ti",
   "navigator.change": "Cambiar",
   "controls.currentRole": "Puesto actual...",
   "controls.explainer":
-    "Usa el mapa para explorar tu siguiente paso. Tras elegir tu puesto actual, selecciona un tiempo abajo para empezar a aprender ahora.",
-  "controls.timeQuestion":
-    "¿Cuánto tiempo tienes? Elige una franja para ver el aprendizaje que encaja y empezar en tu nivel.",
+    "Elige tu puesto actual para ver tus opciones, o toca cualquier paso del mapa.",
   "drawer.title": "Panel de detalle",
   "drawer.close": "Cerrar",
-  "managers.kicker": "Para managers",
   "managers.heading": "Apoyar a tu equipo",
   "managers.sub":
     "Como manager, tienes un papel clave en el crecimiento de tu equipo. Así puedes ayudar a tus compañeros a sacar el máximo partido de los programas de liderazgo de IHG.",
   "managers.col1": "Cómo apoyar el desarrollo",
   "managers.col2": "Acciones rápidas para hoy",
-  "faq.kicker": "¿Necesitas ayuda?",
+  "managers.step": "Paso",
+  "managers.share": "Compartir esta página",
+  "managers.copied": "Enlace copiado",
   "faq.heading": "Preguntas frecuentes",
   "footer.faq": "FAQ",
   "footer.accessibility": "Accesibilidad",
@@ -257,9 +263,9 @@ const es: Record<StringKey, string> = {
   "panel.startHere": "¿En qué punto de tu camino estás?",
   "panel.tabOverview": "Resumen",
   "panel.emptyWithRole":
-    "Abre una ruta de progreso abajo, o elige otro puesto en el mapa o con los filtros.",
+    "Abre una ruta de progreso abajo, o elige otro puesto en el mapa.",
   "panel.emptyNoRole":
-    "Elige tu puesto abajo para ver opciones de progreso, o usa el mapa o los filtros.",
+    "Elige tu puesto abajo para ver opciones de progreso, o usa el mapa.",
 };
 
 const ar: Record<StringKey, string> = {
@@ -275,35 +281,37 @@ const ar: Record<StringKey, string> = {
   "map.optional": "اختياري",
   "nav.faq": "الأسئلة الشائعة",
   "nav.openNavigator": "افتح الخريطة",
-  "hero.badge": "IHG University · Room to Grow",
   "hero.watchFilm": "شاهد الفيلم",
+  "hero.pauseBackground": "إيقاف فيديو الخلفية مؤقتًا",
+  "hero.playBackground": "تشغيل فيديو الخلفية",
+  "film.close": "إغلاق الفيلم",
+  "film.play": "تشغيل",
+  "film.pause": "إيقاف مؤقت",
+  "film.mute": "كتم الصوت",
+  "film.unmute": "إلغاء كتم الصوت",
+  "film.progress": "تقدم الفيلم",
   "intent.getStarted": "ابدأ",
-  "about.kicker": "عن IHG University",
   "selling.heading": "لماذا تستثمر وقتك مع IHG University؟",
   "selling.subheading": "صُمّمت برامجنا لتعلّم القيادة لتناسب ظروفك.",
-  "selling.prev": "السابق",
-  "selling.next": "التالي",
-  "navigator.kicker": "خريطة تفاعلية",
   "navigator.heading": "اعثر على مسارك المهني",
   "navigator.sub":
     "اختر دورك الحالي لاستكشاف البرامج الموصى بها وخطواتك التالية.",
-  "navigator.searchFilters": "البحث والتصفية",
+  "navigator.chooseRole": "اختر دورك",
   "navigator.tailored": "مخصص لك",
   "navigator.change": "تغيير",
   "controls.currentRole": "الدور الحالي...",
   "controls.explainer":
-    "استخدم الخريطة لاستكشاف خطوتك التالية. بعد اختيار دورك الحالي، اختر وقتًا أدناه لبدء التعلّم الآن.",
-  "controls.timeQuestion":
-    "كم من الوقت لديك؟ اختر فترة لترى التعلّم المناسب ولتبدأ من مستواك.",
+    "اختر دورك الحالي لترى خياراتك، أو انقر على أي خطوة في الخريطة.",
   "drawer.title": "لوحة التفاصيل",
   "drawer.close": "إغلاق",
-  "managers.kicker": "للمديرين",
   "managers.heading": "دعم فريقك",
   "managers.sub":
     "بصفتك مديرًا، تؤدي دورًا حيويًا في مساعدة فريقك على النمو. إليك كيف تدعم زملاءك للاستفادة القصوى من برامج القيادة في IHG.",
   "managers.col1": "كيف تدعم التطوير",
   "managers.col2": "إجراءات سريعة يمكنك اتخاذها الآن",
-  "faq.kicker": "هل تحتاج مساعدة؟",
+  "managers.step": "الخطوة",
+  "managers.share": "شارك هذه الصفحة",
+  "managers.copied": "تم نسخ الرابط",
   "faq.heading": "الأسئلة الشائعة",
   "footer.faq": "الأسئلة الشائعة",
   "footer.accessibility": "إمكانية الوصول",
@@ -336,9 +344,9 @@ const ar: Record<StringKey, string> = {
   "panel.startHere": "أين أنت في رحلتك؟",
   "panel.tabOverview": "نظرة عامة",
   "panel.emptyWithRole":
-    "افتح مسار تقدّم أدناه، أو اختر دورًا آخر من الخريطة أو عبر التصفية.",
+    "افتح مسار تقدّم أدناه، أو اختر دورًا آخر من الخريطة.",
   "panel.emptyNoRole":
-    "اختر دورك الفندقي أدناه لترى خيارات التقدّم، أو استخدم الخريطة أو التصفية.",
+    "اختر دورك الفندقي أدناه لترى خيارات التقدّم، أو استخدم الخريطة.",
 };
 
 export const STRINGS: Record<Locale, Record<StringKey, string>> = {

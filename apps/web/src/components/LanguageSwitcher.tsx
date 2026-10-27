@@ -9,8 +9,8 @@ import {
 export default function LanguageSwitcher() {
   const { locale, setLocale } = useLocale();
   return (
-    <label className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent bg-transparent px-2.5 py-1.5 text-sm text-foreground transition-colors hover:bg-muted/60">
-      <Globe className="h-4 w-4 text-muted-foreground" aria-hidden />
+    <label className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent bg-transparent px-2.5 py-1.5 text-sm text-brand-navy transition-colors hover:bg-brand-navy/5">
+      <Globe className="h-4 w-4 text-brand-navy/70" aria-hidden />
       <span className="sr-only">Language</span>
       <select
         value={locale}

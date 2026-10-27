@@ -52,22 +52,20 @@ export default function RouteNode({
 
   const ringClass =
     isCurrent || isSelected
-      ? "ring-2 ring-primary ring-offset-2"
+      ? "ring-2 ring-brand-orange ring-offset-2"
       : tone
         ? ""
         : "border-2 border-border";
-  const bgClass = isCurrent
-    ? "bg-primary text-primary-foreground"
-    : isSelected
-      ? tone === "advanced"
-        ? "bg-orange-600 text-white"
-        : "bg-primary text-primary-foreground"
+  // Current and selected nodes take Signature Orange, per the design.
+  const bgClass =
+    isCurrent || isSelected
+      ? "bg-brand-orange text-white"
       : tone
         ? TONE_CIRCLE[tone]
         : "bg-muted text-foreground";
 
   const circleSize = icon ? "h-7 w-7" : isCurrent ? "h-6 w-6" : "h-5 w-5";
-  const textColor = isCurrent ? "text-primary-foreground" : "text-foreground";
+  const textColor = isCurrent ? "text-white" : "text-foreground";
   const textSize = "text-[10px]";
 
   const labelClasses = uniformSquare

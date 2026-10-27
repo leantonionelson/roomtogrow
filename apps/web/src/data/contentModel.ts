@@ -1,7 +1,7 @@
 /**
  * Static content model for the Room to Grow / Growth Navigator page.
  * Copy is from IHG's "Room to Grow Landing Page Content V2" sheet (Updated copy
- * column); it doubles as the CMS seed and the offline fallback.
+ * column), updated from the V2GB revision (27 Oct 2026).
  */
 
 import type {
@@ -29,7 +29,7 @@ import { MAP_CONNECTORS } from "./mapTopology";
 export { MAP_CONNECTORS } from "./mapTopology";
 
 export const strapline: Strapline = {
-  headline: "Leadership learning for every stage. IHG University.",
+  headline: "Leadership learning for every stage of your career. IHG University.",
   intro:
     "IHG University offers practical, flexible leadership learning that’s open to all, no matter where you are now or where you’re heading.",
 };
@@ -75,7 +75,7 @@ export const pathAiConfig: PathAiConfig = {
 export const sellingPoints: SellingPoint[] = [
   {
     title: "Learn at your own pace",
-    body: "Our Journey to... programmes are free, self-directed eLearning that's available anytime, anywhere, so you can build your leadership skills around your schedule.",
+    body: "Our Journey to... programmes are self-directed eLearning that are available anytime, anywhere and at no additional cost, so you can build your leadership skills around your schedule.",
   },
   {
     title: "Progress with clear pathways",
@@ -294,7 +294,9 @@ export const programmes: Programme[] = [
     title: "Journey to General Manager",
     description:
       "A focused learning programme designed to prepare leaders for the most critical leadership role in a hotel.",
-    suggestionLine: CORE_SUGGESTION,
+    // The top role has no "next role", so this one gets its own line.
+    suggestionLine:
+      "your pathway to turn strategic leadership into hotel-wide impact.",
     whoItsFor: "Experienced leaders wanting to prepare for a General Manager role.",
     outcomes:
       "The confidence to lead a hotel with the ability to balance commercial, people and brand priorities to deliver impact at the enterprise level.",
@@ -310,6 +312,8 @@ export const programmes: Programme[] = [
     fullTitle: "Foundational Diploma of Hospitality Leadership (Level 3)",
     description:
       "An accredited, blended learning programme with six live virtual modules leading to an internationally recognised qualification.",
+    // Enrolment link from the sheet's FAQ ("How do I enrol in a Diploma programme?").
+    ctaUrl: "https://mylearning.sumtotal.host/core/viewPlaylistDetails/81122",
     suggestionLine: DIPLOMA_SUGGESTION,
     whoItsFor:
       "Supervisors in IHG hotels who are ready to deepen their leadership skills through structured, facilitated learning.",
@@ -348,6 +352,8 @@ export const programmes: Programme[] = [
     fullTitle: "Diploma of Hospitality Leadership (Level 4)",
     description:
       "An accredited, blended learning qualification with six live virtual modules that take managers deeper into the leadership capabilities that drive hotel performance.",
+    // Enrolment link from the sheet's FAQ ("How do I enrol in a Diploma programme?").
+    ctaUrl: "https://mylearning.sumtotal.host/rcore/c/viewPlaylistDetails/138054",
     suggestionLine: DIPLOMA_SUGGESTION,
     whoItsFor:
       "Managers in IHG hotels who are ready to formalise their leadership development and earn a recognised qualification.",
@@ -389,7 +395,7 @@ export const programmes: Programme[] = [
       "An accredited learning programme to enable senior hospitality leaders to lead complex hotel operations and drive sustained business performance.",
     suggestionLine: DIPLOMA_SUGGESTION,
     whoItsFor:
-      "Heads of Departments, Senior Leaders and ExCom who are ready to be tested in applying their leadership tools in real world hotel environments. You must have completed Journey to Senior Manager.",
+      "Heads of Departments, Senior Leaders and Executive Committees who are ready to be tested in applying their leadership tools in real world hotel environments. You must have completed Journey to Senior Manager.",
     outcomes:
       "An internationally recognised senior leadership qualification, building advanced capabilities in strategic thinking, commercial and operational leadership, leading through others, driving change, and influencing stakeholders — applied to the complex, real-world challenges of leading hotels at scale.",
     recommendation:
@@ -454,7 +460,8 @@ export const faqs: Faq[] = [
   {
     id: "journey_free",
     question: "Are the Journey to... programmes really free?",
-    answer: "Yes. All our Journey to... programmes are free.",
+    answer:
+      "Yes. All our Journey to... programmes are included in your IHG core learning package.",
   },
   {
     id: "journey_vs_diploma",
@@ -640,7 +647,13 @@ export function getCommittedHighlightNodeIds(
       nodes.add(c.toId);
     }
   }
-  if (selectedNodeType === "advanced" && selectedNodeId.startsWith("hospitality_diploma")) {
+  // Supporting core route only when the diploma is ahead of the role (a
+  // diploma behind it has no route, so the role's own next steps don't apply).
+  if (
+    selectedNodeType === "advanced" &&
+    selectedNodeId.startsWith("hospitality_diploma") &&
+    pathEdgeIds.length > 0
+  ) {
     getSupportingHighlightsForAdvanced(roleId, selectedNodeId).nodeIds.forEach((n) =>
       nodes.add(n),
     );
@@ -656,6 +669,7 @@ export function getCommittedSoftConnectionIds(
 ): string[] {
   if (selectedNodeType !== "advanced") return [];
   if (!selectedNodeId?.startsWith("hospitality_diploma")) return [];
+  if (getConnectionsForSelection(roleId, selectedNodeId).length === 0) return [];
   return getSupportingHighlightsForAdvanced(roleId, selectedNodeId).connectionIds;
 }
 
@@ -854,7 +868,6 @@ export function buildDevelopmentCase({
   const nextRole =
     getDestinationRoleForProgramme(programme.id) ??
     (currentRoleId ? getNextRoleById(currentRoleId) : null);
-  const currentLabel = currentRole?.label ?? "colleague";
   const nextLabel = nextRole?.label ?? "your next step";
 
   const persona = selectedPersonaId
@@ -865,18 +878,38 @@ export function buildDevelopmentCase({
     : "";
 
   const audience = programme.whoItsFor?.trim().replace(/[.\s]+$/, "");
-  const whyFits = audience
-    ? `${programme.title} is designed for: ${audience}. A strong match as you move from ${currentLabel} toward ${nextLabel}.${personaClause}`
-    : `${programme.title} supports your move from ${currentLabel} toward ${nextLabel}.${personaClause}`;
-
+  const designedFor = audience
+    ? `${programme.title} is designed for: ${audience}.`
+    : `${programme.title}`;
   const whatYouGain = programme.outcomes?.trim()
     ? [programme.outcomes.trim()]
     : [];
 
+  // Already at or past the step this programme prepares for (e.g. a Manager
+  // reading about the Foundational Diploma): point them at their team.
+  if (currentRole && nextRole && currentRole.level >= nextRole.level) {
+    return {
+      currentPosition: `You are currently a ${currentRole.label}.`,
+      nextStep: `This programme supports the move to ${nextLabel}, a step you've already taken. It may suit colleagues in your team.`,
+      whyFits: `${designedFor}${personaClause}`,
+      whatYouGain,
+    };
+  }
+
+  // No role chosen: don't guess one; describe the destination only.
+  if (!currentRole) {
+    return {
+      currentPosition: `You're looking ahead to ${nextLabel}.`,
+      nextStep: `This programme supports the transition to ${nextLabel}.`,
+      whyFits: `${designedFor} A strong match as you work toward ${nextLabel}.${personaClause}`,
+      whatYouGain,
+    };
+  }
+
   return {
-    currentPosition: `You are currently a ${currentLabel} preparing for ${nextLabel}.`,
+    currentPosition: `You are currently a ${currentRole.label} preparing for ${nextLabel}.`,
     nextStep: `This programme supports your transition to ${nextLabel}.`,
-    whyFits,
+    whyFits: `${designedFor} A strong match as you move from ${currentRole.label} toward ${nextLabel}.${personaClause}`,
     whatYouGain,
   };
 }

@@ -3,12 +3,45 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+/*
+ * Brand type. The design specifies Graphik Wide (headings) and Graphik (body),
+ * which are commercial faces: local() picks them up where they are installed,
+ * and the free fallbacks below cover everyone else. To ship the licensed
+ * webfonts, add url() sources here — nothing else needs to change.
+ * Archivo (OFL, vendored in assets/fonts) at 125% width stands in for
+ * Graphik Wide; Geist stands in for Graphik.
+ */
+@font-face {
+  font-family: "Brand Wide";
+  font-weight: 100 900;
+  font-display: swap;
+  src: local("Graphik Wide"), local("GraphikWide-Regular");
+}
+@font-face {
+  font-family: "Brand Wide Fallback";
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url(./assets/fonts/archivo-latin-ext-wdth-normal.woff2) format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Brand Wide Fallback";
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url(./assets/fonts/archivo-latin-wdth-normal.woff2) format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @custom-variant dark (&:is(.dark *));
 
+/* clip, not hidden: hidden makes these scroll containers, which breaks the
+   position: sticky scroll sections. */
 html,
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 html {
@@ -21,37 +54,11 @@ html {
 }
 
 #root {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
-#selling-points-carousel::-webkit-scrollbar,
 .programme-explorer-carousel::-webkit-scrollbar {
   display: none;
-}
-
-/*
- * Full-bleed carousel: the first card lines up with the page container while
- * the rest of the track runs off-canvas to the viewport edge. Percentages
- * (not 100vw) so the maths excludes the scrollbar. 72rem = container max-w-6xl.
- */
-.carousel-bleed {
-  /* container centring offset + the container's own gutter */
-  padding-inline-start: calc(max(0px, (100% - 72rem) / 2) + 1rem);
-  padding-inline-end: 1rem;
-  scroll-padding-inline-start: calc(max(0px, (100% - 72rem) / 2) + 1rem);
-}
-@media (min-width: 640px) {
-  .carousel-bleed {
-    padding-inline-start: calc(max(0px, (100% - 72rem) / 2) + 1.5rem);
-    padding-inline-end: 1.5rem;
-    scroll-padding-inline-start: calc(max(0px, (100% - 72rem) / 2) + 1.5rem);
-  }
-}
-@media (min-width: 1024px) {
-  .carousel-bleed {
-    padding-inline-start: calc(max(0px, (100% - 72rem) / 2) + 2rem);
-    scroll-padding-inline-start: calc(max(0px, (100% - 72rem) / 2) + 2rem);
-  }
 }
 
 /* ---- Brand motion & glass system ---------------------------------- */
@@ -72,17 +79,19 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
-/* Deep Blue → Signature Orange headline gradient. */
-@utility text-gradient-brand {
-  background-image: linear-gradient(
-    92deg,
-    var(--primary) 10%,
-    #2e6178 55%,
-    var(--brand-orange) 105%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/*
+ * "Watch the film" rollover: a row of camera glyphs drifting through the pill.
+ * The track holds two identical halves, so shifting by -50% loops seamlessly.
+ */
+@keyframes film-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .film-marquee {
+    animation: film-marquee 2.4s linear infinite;
+  }
 }
 
 /* Scroll-triggered reveal (driven by the Reveal component). */
@@ -119,8 +128,15 @@ html {
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-heading: "Brand Wide", "Brand Wide Fallback", var(--font-sans);
+  --font-sans: "Graphik", "Geist Variable", sans-serif;
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-ink: var(--brand-ink);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -162,11 +178,12 @@ html {
 }
 
 /*
- * Design tokens — INTERIM IHG corporate palette (public assets via
- * brandfetch.com/ihg.com, 2026-07-24): Deep Blue #1F4456, Signature
- * Orange #E8542C, Cool Gray #C2C7CA, Warm White #F0EEED.
- * Replace with the official brand kit values when supplied. Components
- * reference tokens only, never raw colors — this file is the swap point.
+ * Design tokens — IHG University palette from the Room to Grow website
+ * design (InDesign swatches, 2026-10-22): Deep Blue #1F4456, Signature
+ * Orange #E8542C, Cool Gray #C2C7CA, Warm White #F0EEED, plus the line-art
+ * accents Yellow #F4C064, Blue #426399 and Teal #448790.
+ * Components reference tokens only, never raw colors — this file is the
+ * swap point.
  */
 :root {
   --background: #ffffff;
@@ -187,7 +204,13 @@ html {
   --border: #dfe3e4; /* from IHG Cool Gray */
   --input: #dfe3e4;
   --ring: #6c93a5; /* Deep Blue 40% */
+  --brand-navy: #1f4456; /* IHG Deep Blue, fixed (hero, footer, film) */
+  --brand-ink: #0b1a22; /* near-black Deep Blue (Navigator spotlight) */
   --brand-orange: #e8542c; /* IHG Signature Orange (value-add accents) */
+  --brand-yellow: #f4c064;
+  --brand-blue: #426399;
+  --brand-teal: #448790;
+  --brand-gray: #c2c7ca; /* IHG Cool Gray (inactive line art) */
   --chart-1: #1f4456;
   --chart-2: #e8542c;
   --chart-3: #6c93a5;
@@ -247,5 +270,11 @@ html {
   }
   html {
     @apply font-sans;
+  }
+  h1,
+  h2 {
+    font-family: var(--font-heading);
+    font-stretch: 125%;
+    letter-spacing: -0.01em;
   }
 }
