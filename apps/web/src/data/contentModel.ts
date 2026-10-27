@@ -24,6 +24,7 @@ import type {
   Strapline,
   UserContext,
 } from "../types/content";
+import type { Translate } from "../i18n/strings";
 import { MAP_CONNECTORS } from "./mapTopology";
 
 export { MAP_CONNECTORS } from "./mapTopology";
@@ -848,17 +849,22 @@ export function getDestinationRoleForProgramme(
 }
 
 /**
- * Deterministic “development case” copy for manager conversations (advanced programmes).
- * Uses only fields from the content model — no API or randomness.
+ * Deterministic “development case” copy for manager conversations (advanced
+ * programmes). Uses only the content model; sentences come from the UI
+ * string tables (`t`) and role names from the active locale (`roleLabel`),
+ * so it reads in the visitor's language.
  */
 export function buildDevelopmentCase({
   programme,
   currentRoleId,
-  selectedPersonaId,
+  t,
+  roleLabel,
 }: {
   programme: Programme | null | undefined;
   currentRoleId?: string | null;
-  selectedPersonaId?: string | null;
+  t: Translate;
+  /** Role name in the active locale. */
+  roleLabel: (roleId: string) => string;
 }): DevelopmentCase | null {
   if (!programme) return null;
 
@@ -868,19 +874,13 @@ export function buildDevelopmentCase({
   const nextRole =
     getDestinationRoleForProgramme(programme.id) ??
     (currentRoleId ? getNextRoleById(currentRoleId) : null);
-  const nextLabel = nextRole?.label ?? "your next step";
-
-  const persona = selectedPersonaId
-    ? personas.find((p) => p.id === selectedPersonaId)
-    : null;
-  const personaClause = persona?.panelFocusSelf
-    ? ` This connects to your focus: ${persona.panelFocusSelf}`
-    : "";
+  const next = nextRole ? roleLabel(nextRole.id) : t("case.nextFallback");
+  const current = currentRole ? roleLabel(currentRole.id) : "";
 
   const audience = programme.whoItsFor?.trim().replace(/[.\s]+$/, "");
   const designedFor = audience
-    ? `${programme.title} is designed for: ${audience}.`
-    : `${programme.title}`;
+    ? t("case.designedFor", { title: programme.title, audience })
+    : programme.title;
   const whatYouGain = programme.outcomes?.trim()
     ? [programme.outcomes.trim()]
     : [];
@@ -889,9 +889,9 @@ export function buildDevelopmentCase({
   // reading about the Foundational Diploma): point them at their team.
   if (currentRole && nextRole && currentRole.level >= nextRole.level) {
     return {
-      currentPosition: `You are currently a ${currentRole.label}.`,
-      nextStep: `This programme supports the move to ${nextLabel}, a step you've already taken. It may suit colleagues in your team.`,
-      whyFits: `${designedFor}${personaClause}`,
+      currentPosition: t("case.currentTaken", { current }),
+      nextStep: t("case.nextTaken", { next }),
+      whyFits: designedFor,
       whatYouGain,
     };
   }
@@ -899,17 +899,17 @@ export function buildDevelopmentCase({
   // No role chosen: don't guess one; describe the destination only.
   if (!currentRole) {
     return {
-      currentPosition: `You're looking ahead to ${nextLabel}.`,
-      nextStep: `This programme supports the transition to ${nextLabel}.`,
-      whyFits: `${designedFor} A strong match as you work toward ${nextLabel}.${personaClause}`,
+      currentPosition: t("case.currentNone", { next }),
+      nextStep: t("case.nextNone", { next }),
+      whyFits: t("case.whyNone", { designedFor, next }),
       whatYouGain,
     };
   }
 
   return {
-    currentPosition: `You are currently a ${currentRole.label} preparing for ${nextLabel}.`,
-    nextStep: `This programme supports your transition to ${nextLabel}.`,
-    whyFits: `${designedFor} A strong match as you move from ${currentRole.label} toward ${nextLabel}.${personaClause}`,
+    currentPosition: t("case.currentAhead", { current, next }),
+    nextStep: t("case.nextAhead", { next }),
+    whyFits: t("case.whyAhead", { designedFor, current, next }),
     whatYouGain,
   };
 }

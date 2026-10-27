@@ -100,7 +100,7 @@ export default function HeroVideoSection() {
   return (
     <section
       className="relative isolate overflow-hidden bg-brand-navy pb-14 pt-20 text-white md:pb-16 md:pt-24"
-      aria-label="Hero"
+      aria-label={t("a11y.hero")}
     >
       <div className="grid md:min-h-[min(78vh,680px)] md:grid-cols-[minmax(0,44%)_minmax(0,1fr)]">
         {/* Media panel — flush to the viewport edge. The line art sits outside

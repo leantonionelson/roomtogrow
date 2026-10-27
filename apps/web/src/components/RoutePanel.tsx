@@ -22,15 +22,11 @@ import type {
 } from "../types/content";
 import type { MapInteractionState, NavigatorUserContext } from "../types/ui";
 import type { PathAiFocus } from "../data/pathAi";
-import { useT } from "../content/ContentProvider";
+import { useContentLookup, useSiteContent, useT } from "../content/ContentProvider";
 import {
   buildDevelopmentCase,
   getCoreJourneyForRole,
   getDiplomaForRole,
-  getProgrammeById,
-  getRoleById,
-  getStoryById,
-  roles,
 } from "../data/contentModel";
 
 const DETAIL_BLOCK_CLASS = "rounded-lg border bg-muted/40 p-3";
@@ -276,11 +272,12 @@ function RelatedLearning({
   onActivateNode?: ActivateNode;
 }) {
   const t = useT();
+  const lookup = useContentLookup();
   // IHG's sheet lists each programme among its own related learning; a link
   // to the panel you're already on goes nowhere, so it's left out.
   const related = programme.relatedProgrammeIds
     .filter((id) => id !== programme.id)
-    .map((id) => getProgrammeById(id))
+    .map((id) => lookup.programme(id))
     .filter((p): p is Programme => Boolean(p));
   if (related.length === 0 && programme.resources.length === 0) return null;
   return (
@@ -356,12 +353,13 @@ function RoleOverviewPanel({
   onActivateNode?: ActivateNode;
 }) {
   const t = useT();
-  const role = getRoleById(roleId);
+  const lookup = useContentLookup();
+  const role = lookup.role(roleId);
   if (!role) return null;
   const journeyId = getCoreJourneyForRole(role.id);
   const diplomaId = getDiplomaForRole(role.id);
   const suggestedProgrammes = [journeyId, diplomaId]
-    .map((id) => (id ? getProgrammeById(id) : null))
+    .map((id) => lookup.programme(id))
     .filter((p): p is Programme => Boolean(p));
   const suggestedResources = role.resources.filter((r) => r.description);
   const hasSuggestions =
@@ -471,17 +469,16 @@ function AdvancedProgrammePanel({
   programme,
   onClose,
   userContext,
-  selectedPersonaId,
   onActivateNode,
   ...selection
 }: SidebarSelection & {
   programme: Programme;
   onClose?: () => void;
   userContext: NavigatorUserContext | null;
-  selectedPersonaId?: string | null;
   onActivateNode?: ActivateNode;
 }) {
   const t = useT();
+  const lookup = useContentLookup();
   const [quoteExpanded, setQuoteExpanded] = useState(false);
   const [developmentCase, setDevelopmentCase] =
     useState<DevelopmentCase | null>(null);
@@ -585,8 +582,8 @@ function AdvancedProgrammePanel({
                 programme,
                 // Only describe the visitor by a role they chose.
                 currentRoleId: userContext?.roleInferred ? null : userContext?.currentRoleId,
-                selectedPersonaId:
-                  userContext?.selectedPersonaId ?? selectedPersonaId,
+                t,
+                roleLabel: (id) => lookup.role(id)?.label ?? id,
               }),
             )
           }
@@ -651,7 +648,7 @@ export default function RoutePanel({
   selectedStoryId,
   selectedProgrammeId,
   userContext,
-  selectedPersonaId,
+  selectedPersonaId: _selectedPersonaId,
   onClose,
   onActivateNode,
   onAiFocusChange: _onAiFocusChange,
@@ -664,11 +661,10 @@ export default function RoutePanel({
   onActivateNode?: ActivateNode;
   onAiFocusChange?: (focus: PathAiFocus | null) => void;
 }) {
+  const lookup = useContentLookup();
   const activeNodeId = selectedProgrammeId || selectedNodeId;
-  const activeProgramme = activeNodeId
-    ? getProgrammeById(activeNodeId)
-    : null;
-  const activeRole = activeNodeId ? getRoleById(activeNodeId) : null;
+  const activeProgramme = lookup.programme(activeNodeId);
+  const activeRole = lookup.role(activeNodeId);
 
   const effectiveType =
     selectedNodeType ??
@@ -681,7 +677,7 @@ export default function RoutePanel({
         : null);
 
   if (selectedStoryId) {
-    const story = getStoryById(selectedStoryId);
+    const story = lookup.story(selectedStoryId);
     if (!story)
       return (
         <EmptyPanel
@@ -746,7 +742,6 @@ export default function RoutePanel({
         programme={activeProgramme}
         onClose={onClose}
         userContext={userContext}
-        selectedPersonaId={selectedPersonaId}
         onActivateNode={onActivateNode}
         selectedNodeId={selectedNodeId}
         selectedProgrammeId={selectedProgrammeId}
@@ -783,8 +778,10 @@ function EmptyPanel({
   const anchorRoleId = userContext?.roleInferred ? null : (userContext?.currentRoleId ?? null);
   const journeyId = anchorRoleId ? getCoreJourneyForRole(anchorRoleId) : null;
   const diplomaId = anchorRoleId ? getDiplomaForRole(anchorRoleId) : null;
-  const journeyProg = journeyId ? getProgrammeById(journeyId) : null;
-  const diplomaProg = diplomaId ? getProgrammeById(diplomaId) : null;
+  const lookup = useContentLookup();
+  const { roles } = useSiteContent();
+  const journeyProg = lookup.programme(journeyId);
+  const diplomaProg = lookup.programme(diplomaId);
 
   return (
     <PanelShell

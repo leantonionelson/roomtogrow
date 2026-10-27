@@ -14,7 +14,7 @@ export default function Header() {
           Room to Grow
         </a>
 
-        <nav className="flex items-center gap-1 sm:gap-1.5" aria-label="Primary">
+        <nav className="flex items-center gap-1 sm:gap-1.5" aria-label={t("a11y.primaryNav")}>
           <LanguageSwitcher />
           <Button
             variant="ghost"

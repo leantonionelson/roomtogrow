@@ -10,7 +10,7 @@ export default function Footer() {
 
         <nav
           className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85"
-          aria-label="Footer"
+          aria-label={t("a11y.footerNav")}
         >
           <a href="#faq" className="transition-colors hover:text-white">
             {t("footer.faq")}

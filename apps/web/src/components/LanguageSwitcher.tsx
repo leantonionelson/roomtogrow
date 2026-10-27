@@ -1,5 +1,5 @@
 import { Globe } from "lucide-react";
-import { useLocale } from "../content/ContentProvider";
+import { useLocale, useT } from "../content/ContentProvider";
 import {
   LOCALE_NAMES,
   SUPPORTED_LOCALES,
@@ -8,10 +8,11 @@ import {
 
 export default function LanguageSwitcher() {
   const { locale, setLocale } = useLocale();
+  const t = useT();
   return (
     <label className="relative inline-flex items-center gap-1.5 rounded-full border border-transparent bg-transparent px-2.5 py-1.5 text-sm text-brand-navy transition-colors hover:bg-brand-navy/5">
       <Globe className="h-4 w-4 text-brand-navy/70" aria-hidden />
-      <span className="sr-only">Language</span>
+      <span className="sr-only">{t("a11y.language")}</span>
       <select
         value={locale}
         onChange={(e) => {

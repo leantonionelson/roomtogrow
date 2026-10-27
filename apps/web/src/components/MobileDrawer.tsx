@@ -46,6 +46,7 @@ export default function MobileDrawer({
         side="bottom"
         className="max-h-[70vh] overflow-auto rounded-t-lg p-0 md:hidden"
         overlayClassName="md:hidden"
+        closeLabel={t("a11y.close")}
         aria-describedby={undefined}
       >
         <SheetTitle className="sr-only">{t("drawer.title")}</SheetTitle>

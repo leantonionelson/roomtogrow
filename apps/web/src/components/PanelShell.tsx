@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
+import { useT } from "../content/ContentProvider";
 import lounge from "../assets/brand/portraits/lounge.jpg";
 import reception from "../assets/brand/portraits/reception.jpg";
 import meeting from "../assets/brand/portraits/meeting.jpg";
@@ -63,6 +64,7 @@ export default function PanelShell({
    */
   action?: ReactNode | ((setTab: (id: string) => void) => ReactNode);
 }) {
+  const t = useT();
   const firstTabId = tabs?.[0]?.id;
   const [activeTab, setActiveTab] = useState(firstTabId);
   const shownTitle = useRef(title);
@@ -96,7 +98,7 @@ export default function PanelShell({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close"
+              aria-label={t("a11y.close")}
               className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-foreground transition-colors hover:bg-white"
             >
               <X className="h-4 w-4" aria-hidden />
@@ -131,7 +133,7 @@ export default function PanelShell({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("a11y.close")}
             className="glass-dark absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-white transition-colors hover:bg-white/25"
           >
             <X className="h-4 w-4" aria-hidden />

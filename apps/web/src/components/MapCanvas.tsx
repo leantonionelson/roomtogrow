@@ -6,20 +6,17 @@ import RouteNode, {
   type RouteNodeTone,
 } from "./RouteNode";
 import MapViewport from "./MapViewport";
-import { useT } from "../content/ContentProvider";
+import { useSiteContent, useT } from "../content/ContentProvider";
 import type { StringKey } from "../i18n/strings";
+import type { SiteContent } from "../types/content";
 import type { MapInteractionState, NavigatorUserContext } from "../types/ui";
 import type { PathAiFocus } from "../data/pathAi";
 import { MAP_CONNECTORS } from "../data/mapTopology";
 import {
   getPastRoleIds,
-  getProgrammeById,
-  getRoleById,
   MAP_MODE,
   overviewLead,
   programmeRelevanceLine,
-  programmes,
-  roles,
 } from "../data/contentModel";
 
 /**
@@ -68,10 +65,11 @@ const ROLE_PLACEMENT = [
 
 function getNodeSpec(
   nodeId: string,
+  content: SiteContent,
 ): { nodeType: "role" | "programme"; label: string; id: string } | null {
-  const r = roles.find((x) => x.id === nodeId);
+  const r = content.roles.find((x) => x.id === nodeId);
   if (r) return { nodeType: "role", label: r.label, id: r.id };
-  const p = programmes.find((x) => x.id === nodeId);
+  const p = content.programmes.find((x) => x.id === nodeId);
   if (p) return { nodeType: "programme", label: p.title, id: p.id };
   return null;
 }
@@ -80,18 +78,19 @@ function getNodeSpec(
 function getMapTileCopy(
   nodeId: string,
   t: (key: StringKey) => string,
+  content: SiteContent,
 ): {
   summaryLine: string;
   ctaLabel: string;
 } {
-  const roleEntity = getRoleById(nodeId);
+  const roleEntity = content.roles.find((r) => r.id === nodeId);
   if (roleEntity) {
     return {
       summaryLine: overviewLead(roleEntity.overview),
       ctaLabel: t("map.seeOptions"),
     };
   }
-  const progEntity = getProgrammeById(nodeId);
+  const progEntity = content.programmes.find((p) => p.id === nodeId);
   if (progEntity) {
     return {
       summaryLine: programmeRelevanceLine(progEntity),
@@ -153,6 +152,7 @@ export default function MapCanvas({
   aiFocus?: PathAiFocus | null;
 }) {
   const t = useT();
+  const content = useSiteContent();
   const isMapActive = userContext != null;
   const mapMode = userContext?.mapMode ?? MAP_MODE.startNow;
   const isExploreNext = mapMode === MAP_MODE.exploreNext;
@@ -220,7 +220,7 @@ export default function MapCanvas({
   ]);
 
   const renderMapNode = (nodeId: string) => {
-    const spec = getNodeSpec(nodeId);
+    const spec = getNodeSpec(nodeId, content);
     if (!spec) return null;
 
     const isSelected =
@@ -282,7 +282,7 @@ export default function MapCanvas({
     const cardPulse = isAiFocusNode && !isDiplomaNode ? "animate-pulse" : "";
 
     const optionalMapBadge = isSoftDiplomaSuggest ? t("map.optional") : undefined;
-    const { summaryLine, ctaLabel } = getMapTileCopy(nodeId, t);
+    const { summaryLine, ctaLabel } = getMapTileCopy(nodeId, t, content);
     const ariaLabel = [spec.label, optionalMapBadge, summaryLine, ctaLabel]
       .filter(Boolean)
       .join(". ");

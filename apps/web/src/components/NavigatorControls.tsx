@@ -30,7 +30,7 @@ export default function NavigatorControls({
           onRoleChange?.(v);
         }}
         className="w-full min-w-0 rounded-lg border bg-card px-2.5 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        aria-label="Current role"
+        aria-label={t("controls.roleLabel")}
       >
         <option value="">{t("controls.currentRole")}</option>
         {roles.map((r) => (
