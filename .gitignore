@@ -23,8 +23,6 @@ dist-ssr
 
 # Build artifacts
 *.tsbuildinfo
-.next
-apps/cms/*.db
 
 # Editor directories and files
 .vscode/*

@@ -1,7 +1,6 @@
 /**
- * Static fallback content: the complete SiteContent bundle built from the
- * in-repo content model. Used at first render and whenever the CMS is
- * unreachable (important on an intranet where the CMS host may be blocked).
+ * The complete SiteContent bundle, built from the in-repo content model.
+ * Copy changes go in `data/contentModel.ts` and ship with the build.
  */
 import type { SiteContent } from "../types/content";
 import {
@@ -20,7 +19,7 @@ import {
   strapline,
 } from "../data/contentModel";
 
-export const fallbackContent: SiteContent = {
+export const siteContent: SiteContent = {
   strapline,
   introBlock,
   intentSelector,

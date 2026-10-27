@@ -1,8 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { SiteContent } from "../types/content";
-import { fallbackContent } from "./fallback";
-import { fetchSiteContent, getCmsUrl } from "./client";
+import { siteContent } from "./siteContent";
 import {
   detectLocale,
   localeDir,
@@ -10,17 +9,6 @@ import {
   type Locale,
 } from "../i18n/locale";
 import { STRINGS, type StringKey } from "../i18n/strings";
-
-interface ContentState {
-  content: SiteContent;
-  /** "fallback" until the CMS responds; the page renders either way. */
-  source: "fallback" | "cms";
-}
-
-const ContentContext = createContext<ContentState>({
-  content: fallbackContent,
-  source: "fallback",
-});
 
 interface LocaleState {
   locale: Locale;
@@ -36,10 +24,6 @@ const LocaleContext = createContext<LocaleState>({
 
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => detectLocale());
-  const [state, setState] = useState<ContentState>({
-    content: fallbackContent,
-    source: "fallback",
-  });
 
   const setLocale = useCallback((next: Locale) => {
     persistLocale(next);
@@ -52,37 +36,16 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     document.documentElement.dir = localeDir(locale);
   }, [locale]);
 
-  useEffect(() => {
-    const cmsUrl = getCmsUrl();
-    if (!cmsUrl) return;
-    let cancelled = false;
-    fetchSiteContent(cmsUrl, locale)
-      .then((content) => {
-        if (!cancelled) setState({ content, source: "cms" });
-      })
-      .catch((err) => {
-        console.warn("CMS unreachable, using built-in content:", err);
-        // Keep whatever we already have; English fallback at worst.
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [locale]);
-
   return (
     <LocaleContext.Provider value={{ locale, dir: localeDir(locale), setLocale }}>
-      <ContentContext.Provider value={state}>{children}</ContentContext.Provider>
+      {children}
     </LocaleContext.Provider>
   );
 }
 
-/** Current site content: CMS-backed when available, static fallback otherwise. */
+/** Site content (English; bundled from the content model). */
 export function useSiteContent(): SiteContent {
-  return useContext(ContentContext).content;
-}
-
-export function useContentSource(): "fallback" | "cms" {
-  return useContext(ContentContext).source;
+  return siteContent;
 }
 
 export function useLocale(): LocaleState {

@@ -15,8 +15,3 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  # The deployed site reads content from the hosted Payload CMS at build/run
-  # time. Leave unset to render from the built-in English fallback content.
-  # Set it in the Netlify UI (Site configuration → Environment variables) or
-  # here once the CMS is hosted:
-  # VITE_CMS_URL = "https://your-cms-host.example.com"
