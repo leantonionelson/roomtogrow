@@ -64,12 +64,21 @@ export default function RouteNode({
         ? TONE_CIRCLE[tone]
         : "bg-muted text-foreground";
 
-  const circleSize = icon ? "h-7 w-7" : isCurrent ? "h-6 w-6" : "h-5 w-5";
+  // Map tiles use a slightly smaller disc so long titles keep their room.
+  const circleSize = icon
+    ? uniformSquare
+      ? "h-6 w-6"
+      : "h-7 w-7"
+    : isCurrent
+      ? "h-6 w-6"
+      : "h-5 w-5";
   const textColor = isCurrent ? "text-white" : "text-foreground";
   const textSize = "text-[10px]";
 
   const labelClasses = uniformSquare
-    ? `max-w-full min-h-[1lh] break-words px-0.5 text-center text-[10px] leading-tight line-clamp-4 ${
+    ? // Font scales with the tile (cqw = tile width) so the longest titles
+      // ("Foundational Diploma of Hospitality Leadership") fit at desktop sizes.
+      `max-w-full min-h-[1lh] break-words text-center text-[clamp(8.5px,10.5cqw,11px)] leading-tight line-clamp-5 ${
         isSelected ? "font-medium text-foreground" : "text-muted-foreground"
       }`
     : `max-w-full px-0.5 text-center ${
@@ -86,13 +95,17 @@ export default function RouteNode({
       onClick={() => onClick(nodeId)}
       className={`flex flex-col items-center gap-1 rounded transition-all hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
         uniformSquare
-          ? "h-full min-h-0 w-full min-w-0 justify-center px-1 py-0.5"
+          ? "h-full min-h-0 w-full min-w-0 justify-center px-0.5"
           : "w-full"
       }`}
       aria-pressed={isSelected}
     >
       <div
-        className={`flex shrink-0 items-center justify-center rounded-full shadow-xs ${circleSize} ${bgClass} ${ringClass}`}
+        // Small map tiles drop the disc so the title keeps its room (the
+        // pyramid row and hover card still say what the tile is).
+        className={`flex shrink-0 items-center justify-center rounded-full shadow-xs ${circleSize} ${bgClass} ${ringClass} ${
+          uniformSquare ? "@max-[86px]:hidden" : ""
+        }`}
         aria-hidden
       >
         {icon ??

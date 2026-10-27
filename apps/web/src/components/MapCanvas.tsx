@@ -283,7 +283,9 @@ export default function MapCanvas({
 
     const optionalMapBadge = isSoftDiplomaSuggest ? t("map.optional") : undefined;
     const { summaryLine, ctaLabel } = getMapTileCopy(nodeId, t);
-    const ariaLabel = [spec.label, summaryLine, ctaLabel].filter(Boolean).join(". ");
+    const ariaLabel = [spec.label, optionalMapBadge, summaryLine, ctaLabel]
+      .filter(Boolean)
+      .join(". ");
 
     return (
       <div
@@ -300,8 +302,19 @@ export default function MapCanvas({
             {t("map.youAreHere")}
           </div>
         )}
+        {/* "Optional" sits on the tile's bottom edge rather than inside it, so
+            it never squeezes the programme title. */}
+        {optionalMapBadge && (
+          <div
+            className="pointer-events-none absolute -bottom-2.5 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-dashed border-ring bg-background px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground shadow-xs sm:text-[10px]"
+            aria-hidden
+          >
+            {optionalMapBadge}
+          </div>
+        )}
         <div
-          className={`group relative flex aspect-square w-full min-w-0 flex-col overflow-hidden rounded-xl border bg-card shadow-xs transition-all hover:scale-[1.03] hover:shadow-md ${cardRing} ${cardPulse}`}
+          // Inline-size container: the tile's label scales with the tile.
+          className={`group relative flex aspect-square w-full min-w-0 flex-col overflow-hidden rounded-xl border bg-card shadow-xs transition-all [container-type:inline-size] hover:scale-[1.03] hover:shadow-md ${cardRing} ${cardPulse}`}
         >
           {summaryLine ? (
             <div
@@ -317,7 +330,7 @@ export default function MapCanvas({
               </p>
             </div>
           ) : null}
-          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-2 py-2">
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-1 py-1.5">
             <RouteNode
               label={spec.label}
               nodeId={spec.id}
@@ -326,7 +339,6 @@ export default function MapCanvas({
               icon={<MarkerIcon className="h-3.5 w-3.5" aria-hidden />}
               tone={tone}
               uniformSquare
-              mapBadge={optionalMapBadge}
               ariaLabel={ariaLabel}
               onClick={(id) => {
                 onSelectMapNode?.(id);
@@ -357,7 +369,7 @@ export default function MapCanvas({
       <div className="relative flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden">
         {/*
          * The pyramid keeps a minimum readable width (tiles never drop below
-         * ~72px) and lives inside a pannable/zoomable viewport, so on small
+         * ~78px) and lives inside a pannable/zoomable viewport, so on small
          * screens users pan the map rather than squinting at shrunken tiles.
          */}
         <MapViewport
@@ -384,7 +396,7 @@ export default function MapCanvas({
           // (phones, tablets, small laptops beside the panel) tiles keep a
           // readable size and the map pans instead of shrinking. Bottom
           // padding clears the pan/zoom hint in the corner.
-          className="relative mx-auto flex h-full w-full min-w-[760px] max-w-[1920px] flex-col justify-center px-3 pb-11 pt-6 sm:px-5 lg:px-8"
+          className="relative mx-auto flex h-full w-full min-w-[840px] max-w-[1920px] flex-col justify-center px-3 pb-11 pt-6 sm:px-5 lg:px-8"
         >
           {/* Ref on the map content so anchor math matches SVG (same coordinate
               origin). It grows to the frame height so the tiers spread out. */}
