@@ -10,8 +10,22 @@ import hero from "../assets/brand/hero.jpg";
 
 const HERO_IMAGES = [lounge, reception, meeting, colleagueSmile, hero];
 
-/** Deterministic hero per node, so a given place always looks the same. */
+/** IHG material textures, one per map node, keyed by node id (file name). */
+const NODE_TEXTURES: Record<string, string> = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<string>("../assets/brand/textures/*.jpg", {
+      eager: true,
+      import: "default",
+    }),
+  ).map(([path, url]) => [path.replace(/^.*\/|\.jpg$/g, ""), url]),
+);
+
+/**
+ * Panel hero for a node: its texture, else a deterministic photo, so a given
+ * place always looks the same.
+ */
 export function heroForId(id: string): string {
+  if (NODE_TEXTURES[id]) return NODE_TEXTURES[id];
   let hash = 0;
   for (let i = 0; i < id.length; i += 1) hash = (hash + id.charCodeAt(i)) % 997;
   return HERO_IMAGES[hash % HERO_IMAGES.length];
@@ -85,10 +99,12 @@ export default function PanelShell({
     ? tabs.find((tab) => tab.id === (activeTab ?? tabs[0].id))?.content
     : children;
 
+  // Dark at the foot (behind the white title), clear above it so the node's
+  // texture reads.
   const scrim =
     accent === "orange"
-      ? "linear-gradient(to top, rgba(120,38,14,0.92), rgba(232,84,44,0.35) 60%, rgba(232,84,44,0.12))"
-      : "linear-gradient(to top, rgba(16,32,40,0.92), rgba(31,68,86,0.42) 60%, rgba(31,68,86,0.15))";
+      ? "linear-gradient(to top, rgba(110,34,12,0.88), rgba(232,84,44,0.18) 55%, transparent)"
+      : "linear-gradient(to top, rgba(12,26,34,0.88), rgba(31,68,86,0.2) 55%, transparent)";
 
   if (variant === "intro") {
     return (

@@ -4,8 +4,8 @@
     {
       "name": "web",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@room-to-grow/web", "dev"],
-      "port": 5173
+      "runtimeArgs": ["--filter", "@room-to-grow/web", "dev", "--port", "5174", "--strictPort"],
+      "port": 5174
     }
   ]
 }

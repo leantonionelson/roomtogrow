@@ -15,9 +15,9 @@ import { ShieldTileIcon } from "./brand/ShieldArt";
 import type { ShieldTile } from "./brand/ShieldArt";
 import laptop from "../assets/brand/laptop.jpg";
 import colleagueSmile from "../assets/brand/colleague-smile.jpg";
-import reception from "../assets/brand/portraits/reception.jpg";
-import meeting from "../assets/brand/portraits/meeting.jpg";
-import lounge from "../assets/brand/portraits/lounge.jpg";
+import teamLaptop from "../assets/brand/team-laptop.jpg";
+import colleagueConversation from "../assets/brand/colleague-conversation.jpg";
+import deskColleagues from "../assets/brand/desk-colleagues.jpg";
 
 /**
  * Per stage (guidance, then each step): photograph, and the shield tile +
@@ -26,9 +26,9 @@ import lounge from "../assets/brand/portraits/lounge.jpg";
 const STAGES: { src: string; focus: string; tile: ShieldTile; accent: string }[] = [
   { src: laptop, focus: "50% 60%", tile: "house", accent: "var(--brand-teal)" },
   { src: colleagueSmile, focus: "35% 40%", tile: "person", accent: "var(--brand-orange)" },
-  { src: reception, focus: "38% 35%", tile: "arch", accent: "var(--brand-blue)" },
-  { src: meeting, focus: "42% 40%", tile: "leaf", accent: "var(--brand-teal)" },
-  { src: lounge, focus: "32% 40%", tile: "house", accent: "var(--brand-yellow)" },
+  { src: teamLaptop, focus: "50% 30%", tile: "arch", accent: "var(--brand-blue)" },
+  { src: colleagueConversation, focus: "40% 30%", tile: "leaf", accent: "var(--brand-teal)" },
+  { src: deskColleagues, focus: "58% 45%", tile: "house", accent: "var(--brand-yellow)" },
 ];
 
 const stageAt = (i: number) => STAGES[i % STAGES.length];
