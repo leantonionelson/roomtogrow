@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { ChevronDown, Pause, Play, Video } from "lucide-react";
 import { useSiteContent, useT } from "../content/ContentProvider";
 import { usePrefersReducedMotion } from "../lib/motion";
-import { CAMPAIGN_VIDEO_ID } from "../lib/film";
+import { LOOP_SRC } from "../lib/film";
 import FilmTakeover from "./FilmTakeover";
 import IhgUniversityLogo from "./brand/IhgUniversityLogo";
 import { ShieldLineArt } from "./brand/ShieldArt";
@@ -12,88 +12,43 @@ import heroStill from "../assets/brand/hero.jpg";
 const rise = (ms: number) =>
   ({ "--rise-delay": `${ms}ms` }) as CSSProperties;
 
-/** Muted, chrome-less background loop of the campaign film. */
-const BACKGROUND_SRC =
-  `https://www.youtube-nocookie.com/embed/${CAMPAIGN_VIDEO_ID}` +
-  `?autoplay=1&mute=1&loop=1&playlist=${CAMPAIGN_VIDEO_ID}&controls=0` +
-  "&disablekb=1&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&enablejsapi=1";
-
 /** Each sentence of the strapline gets its own line, as in the design. */
 function splitSentences(text: string) {
   return text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map((s) => s.trim()) ?? [text];
 }
 
 /**
- * Hero: brand photography with the film playing muted over it (the still
- * stays underneath as the poster and as the fallback when YouTube is blocked
- * or reduced motion is on), shield line art, and the "Watch the film" pill
- * that opens the full-screen takeover.
+ * Hero: brand photography with a muted loop of the film playing over it (the
+ * still stays underneath as the poster and as the fallback when the video
+ * can't play or reduced motion is on), shield line art, and the "Watch the
+ * film" pill that opens the full-screen takeover.
  */
 export default function HeroVideoSection() {
   const { strapline } = useSiteContent();
   const t = useT();
   const reducedMotion = usePrefersReducedMotion();
-  const frameRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
   const [paused, setPaused] = useState(false);
   const [filmOpen, setFilmOpen] = useState(false);
 
-  const command = (func: "playVideo" | "pauseVideo") =>
-    frameRef.current?.contentWindow?.postMessage(
-      JSON.stringify({ event: "command", func, args: [] }),
-      "*",
-    );
-
   const togglePaused = () => {
-    command(paused ? "playVideo" : "pauseVideo");
+    const video = videoRef.current;
+    if (!video) return;
+    if (paused) void video.play();
+    else video.pause();
     setPaused(!paused);
   };
 
   const openFilm = () => {
-    command("pauseVideo");
+    videoRef.current?.pause();
     setFilmOpen(true);
   };
 
   const closeFilm = () => {
     setFilmOpen(false);
-    if (!paused) command("playVideo");
+    if (!paused) void videoRef.current?.play();
   };
-
-  // Reveal the loop only once the player reports it is actually playing, so
-  // a blocked autoplay (or a blocked YouTube) leaves the still in place
-  // rather than YouTube's poster and play button.
-  useEffect(() => {
-    if (reducedMotion) return;
-    let timer = 0;
-    const onMessage = (e: MessageEvent) => {
-      if (!/^https:\/\/www\.youtube(-nocookie)?\.com$/.test(e.origin)) return;
-      if (e.source !== frameRef.current?.contentWindow) return;
-      let data: { event?: string; info?: number | { playerState?: number } };
-      try {
-        data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
-      } catch {
-        return;
-      }
-      const state =
-        typeof data.info === "number" ? data.info : data.info?.playerState;
-      if (state === 1 && !timer) {
-        // Give YouTube's title overlay a moment to fade first.
-        timer = window.setTimeout(() => setVideoReady(true), 1500);
-      }
-    };
-    window.addEventListener("message", onMessage);
-    return () => {
-      window.removeEventListener("message", onMessage);
-      window.clearTimeout(timer);
-    };
-  }, [reducedMotion]);
-
-  /** Subscribe to player events (the iframe API handshake). */
-  const listen = () =>
-    frameRef.current?.contentWindow?.postMessage(
-      JSON.stringify({ event: "listening", id: "hero-loop", channel: "widget" }),
-      "*",
-    );
 
   const lines = splitSentences(strapline.headline);
 
@@ -114,19 +69,24 @@ export default function HeroVideoSection() {
             />
             {!reducedMotion && (
               <div
-                className={`pointer-events-none absolute inset-0 transition-opacity duration-1000 [container-type:size] ${
+                className={`pointer-events-none absolute inset-0 transition-opacity duration-1000 ${
                   videoReady ? "opacity-100" : "opacity-0"
                 }`}
                 aria-hidden
               >
-                <iframe
-                  ref={frameRef}
-                  src={BACKGROUND_SRC}
-                  title=""
+                {/* Revealed only once it actually plays, so a blocked
+                    autoplay leaves the still in place. */}
+                <video
+                  ref={videoRef}
+                  src={LOOP_SRC}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
                   tabIndex={-1}
-                  allow="autoplay; encrypted-media"
-                  onLoad={listen}
-                  className="absolute left-1/2 top-1/2 h-[max(130cqh,73.13cqw)] w-[max(130cqw,231.11cqh)] -translate-x-1/2 -translate-y-1/2 border-0"
+                  onPlaying={() => setVideoReady(true)}
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </div>
             )}
