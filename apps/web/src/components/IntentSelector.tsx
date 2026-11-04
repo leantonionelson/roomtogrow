@@ -6,7 +6,11 @@ import { Reveal } from "./motion";
 import { ShieldTileIcon } from "./brand/ShieldArt";
 import type { ShieldTile } from "./brand/ShieldArt";
 
-/** Each intent owns a shield tile and an accent (design: "each has its own colour"). */
+/**
+ * Each intent owns a shield tile and an accent (design: "each has its own
+ * colour"), shown at rest so both options read clearly; labels stay navy for
+ * contrast.
+ */
 const INTENT_STYLE: Record<IntentValue, { tile: ShieldTile; colour: string }> = {
   selfGrowth: { tile: "person", colour: "var(--brand-orange)" },
   developingTeam: { tile: "arch", colour: "var(--brand-blue)" },
@@ -54,11 +58,11 @@ export default function IntentSelector({
                     type="button"
                     onClick={() => onSelectIntent(opt.value)}
                     style={{ "--intent": style.colour } as CSSProperties}
-                    className="group flex items-start gap-4 rounded-xl px-4 py-2 text-start text-brand-gray transition-colors duration-300 hover:text-(--intent) focus-visible:text-(--intent) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-w-56 sm:px-8 md:px-10 [@media(hover:none)]:text-(--intent)"
+                    className="group flex items-start gap-4 rounded-xl px-4 py-2 text-start text-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-w-56 sm:px-8 md:px-10"
                   >
-                    <ShieldTileIcon tile={style.tile} className="h-14 w-auto shrink-0" />
+                    <ShieldTileIcon tile={style.tile} className="h-14 w-auto shrink-0 text-(--intent)" />
                     <span className="flex flex-col items-start gap-3 pt-1">
-                      <span className="max-w-40 text-sm leading-snug">{opt.label}</span>
+                      <span className="max-w-44 text-base font-medium leading-snug">{opt.label}</span>
                       <span className="translate-y-1 rounded-full bg-(--intent) px-3.5 py-1 text-xs font-medium text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100">
                         {t("intent.getStarted")}
                       </span>

@@ -18,10 +18,11 @@ function splitSentences(text: string) {
 }
 
 /**
- * Hero: brand photography with a muted loop of the film playing over it (the
- * still stays underneath as the poster and as the fallback when the video
- * can't play or reduced motion is on), shield line art, and the "Watch the
- * film" pill that opens the full-screen takeover.
+ * Hero: brand photography with a short, text-free teaser loop of the film
+ * over it (the still stays underneath as the poster and as the fallback when
+ * the video can't play or reduced motion is on), shield line art, and the
+ * "Watch the film" pill. The panel itself is also a play button: both open
+ * the full-screen takeover.
  */
 export default function HeroVideoSection() {
   const { strapline } = useSiteContent();
@@ -90,6 +91,18 @@ export default function HeroVideoSection() {
                 />
               </div>
             )}
+            {/* The whole panel opens the film; the loop is just a teaser. The
+                play badge sits right of centre, clear of the line art. */}
+            <button
+              type="button"
+              onClick={openFilm}
+              aria-label={t("hero.watchFilm")}
+              className="group absolute inset-0 flex items-center justify-center pl-[45%] focus-visible:outline-none"
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-brand-navy shadow-lg shadow-black/20 transition-transform duration-300 group-hover:scale-110 group-focus-visible:ring-2 group-focus-visible:ring-white group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-brand-navy">
+                <Play className="ml-1 h-6 w-6 fill-current" aria-hidden />
+              </span>
+            </button>
             {!reducedMotion && videoReady && (
               <button
                 type="button"

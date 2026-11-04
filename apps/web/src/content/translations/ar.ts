@@ -9,7 +9,7 @@ import type { ContentTranslation } from "./types";
  */
 export const ar: ContentTranslation = {
   strapline: {
-    headline: "تعلّم القيادة في كل مرحلة من مسيرتك المهنية. IHG University.",
+    headline: "تعلّم القيادة في كل مرحلة من مسيرتك المهنية.",
     intro:
       "توفّر IHG University تعلّمًا عمليًا ومرنًا في القيادة متاحًا للجميع، أيًّا كان موقعك اليوم وأيًّا كانت وجهتك.",
   },
@@ -24,7 +24,6 @@ export const ar: ContentTranslation = {
     options: {
       selfGrowth: "أستكشف خطوتي التالية",
       developingTeam: "أعمل على تطوير فريقي",
-      learnAbout: "أتعرّف على Room to Grow",
     },
   },
   sellingPoints: [
@@ -34,7 +33,7 @@ export const ar: ContentTranslation = {
     },
     {
       title: "تقدّم عبر مسارات واضحة",
-      body: "من المشرف إلى المدير الأول، صُمّم كل برنامج ليبدأ معك من حيث أنت ويأخذك إلى حيث تريد أن تصل.",
+      body: "من المشرف إلى المدير العام، صُمّم كل برنامج ليبدأ معك من حيث أنت ويأخذك إلى حيث تريد أن تصل.",
     },
     {
       title: "احصل على مؤهل معترف به",

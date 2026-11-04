@@ -30,7 +30,7 @@ import { MAP_CONNECTORS } from "./mapTopology";
 export { MAP_CONNECTORS } from "./mapTopology";
 
 export const strapline: Strapline = {
-  headline: "Leadership learning for every stage of your career. IHG University.",
+  headline: "Leadership learning for every stage of your career.",
   intro:
     "IHG University offers practical, flexible leadership learning that’s open to all, no matter where you are now or where you’re heading.",
 };
@@ -80,7 +80,7 @@ export const sellingPoints: SellingPoint[] = [
   },
   {
     title: "Progress with clear pathways",
-    body: "From Supervisor to Senior Manager, every programme is designed to meet you where you are and take you where you want to go next.",
+    body: "From Supervisor to General Manager, every programme is designed to meet you where you are and take you where you want to go next.",
   },
   {
     title: "Earn a recognised qualification",
@@ -433,7 +433,7 @@ export const stories: Story[] = [
     name: "Maria",
     pathDescription: "Housekeeping → Supervisor → Manager",
     shortStory:
-      "Maria started in Housekeeping and used Room to Grow to see her path to Supervisor, then Manager. She completed Journey to Supervisor and Journey to Manager and now leads her own team.",
+      "Maria started in Housekeeping and used the Growth Navigator to see her path to Supervisor, then Manager. She completed Journey to Supervisor and Journey to Manager and now leads her own team.",
   },
   {
     id: "james",

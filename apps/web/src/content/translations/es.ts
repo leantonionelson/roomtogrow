@@ -8,7 +8,7 @@ import type { ContentTranslation } from "./types";
  */
 export const es: ContentTranslation = {
   strapline: {
-    headline: "Formación en liderazgo para cada etapa de tu carrera. IHG University.",
+    headline: "Formación en liderazgo para cada etapa de tu carrera.",
     intro:
       "IHG University ofrece formación en liderazgo práctica y flexible, abierta a todas las personas, sin importar dónde estés ahora ni hacia dónde te diriges.",
   },
@@ -24,7 +24,6 @@ export const es: ContentTranslation = {
     options: {
       selfGrowth: "Estoy explorando mi siguiente paso",
       developingTeam: "Estoy desarrollando a mi equipo",
-      learnAbout: "Quiero conocer Room to Grow",
     },
   },
   sellingPoints: [
@@ -34,7 +33,7 @@ export const es: ContentTranslation = {
     },
     {
       title: "Avanza con rutas claras",
-      body: "De supervisor a gerente sénior, cada programa está diseñado para acompañarte desde donde estás hasta donde quieres llegar.",
+      body: "De supervisor a director general, cada programa está diseñado para acompañarte desde donde estás hasta donde quieres llegar.",
     },
     {
       title: "Obtén una cualificación reconocida",

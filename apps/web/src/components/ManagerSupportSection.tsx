@@ -167,9 +167,7 @@ export default function ManagerSupportSection() {
             preview={item}
             onSelect={goToStage}
           >
-            <p className="font-heading text-lg leading-snug text-primary [font-stretch:125%] md:text-xl">
-              {item}
-            </p>
+            <p>{item}</p>
           </Stage>
         ))}
       </ol>

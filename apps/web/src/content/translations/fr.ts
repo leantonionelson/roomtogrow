@@ -8,7 +8,7 @@ import type { ContentTranslation } from "./types";
  */
 export const fr: ContentTranslation = {
   strapline: {
-    headline: "Développer son leadership à chaque étape de sa carrière. IHG University.",
+    headline: "Développer son leadership à chaque étape de sa carrière.",
     intro:
       "IHG University propose une formation au leadership pratique et flexible, ouverte à toutes et à tous, quel que soit votre poste actuel ou celui que vous visez.",
   },
@@ -24,7 +24,6 @@ export const fr: ContentTranslation = {
     options: {
       selfGrowth: "J’explore ma prochaine étape",
       developingTeam: "Je fais grandir mon équipe",
-      learnAbout: "Je découvre Room to Grow",
     },
   },
   sellingPoints: [
@@ -34,7 +33,7 @@ export const fr: ContentTranslation = {
     },
     {
       title: "Progressez grâce à des parcours clairs",
-      body: "Du poste de superviseur à celui de cadre supérieur, chaque programme est conçu pour vous accompagner là où vous en êtes et vous mener là où vous voulez aller.",
+      body: "Du poste de superviseur à celui de directeur général, chaque programme est conçu pour vous accompagner là où vous en êtes et vous mener là où vous voulez aller.",
     },
     {
       title: "Obtenez une qualification reconnue",
