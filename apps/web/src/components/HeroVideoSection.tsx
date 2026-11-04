@@ -5,7 +5,6 @@ import { useSiteContent, useT } from "../content/ContentProvider";
 import { usePrefersReducedMotion } from "../lib/motion";
 import { LOOP_SRC } from "../lib/film";
 import FilmTakeover from "./FilmTakeover";
-import IhgUniversityLogo from "./brand/IhgUniversityLogo";
 import { ShieldLineArt } from "./brand/ShieldArt";
 import heroStill from "../assets/brand/hero.jpg";
 
@@ -18,11 +17,10 @@ function splitSentences(text: string) {
 }
 
 /**
- * Hero: brand photography with a short, text-free teaser loop of the film
- * over it (the still stays underneath as the poster and as the fallback when
+ * Hero: brand photography with a text-free loop of the film's live-action
+ * shots over it (the still stays underneath as the poster and as the fallback when
  * the video can't play or reduced motion is on), shield line art, and the
- * "Watch the film" pill. The panel itself is also a play button: both open
- * the full-screen takeover.
+ * "Watch the film" pill that opens the full-screen takeover.
  */
 export default function HeroVideoSection() {
   const { strapline } = useSiteContent();
@@ -91,18 +89,6 @@ export default function HeroVideoSection() {
                 />
               </div>
             )}
-            {/* The whole panel opens the film; the loop is just a teaser. The
-                play badge sits right of centre, clear of the line art. */}
-            <button
-              type="button"
-              onClick={openFilm}
-              aria-label={t("hero.watchFilm")}
-              className="group absolute inset-0 flex items-center justify-center pl-[45%] focus-visible:outline-none"
-            >
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-brand-navy shadow-lg shadow-black/20 transition-transform duration-300 group-hover:scale-110 group-focus-visible:ring-2 group-focus-visible:ring-white group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-brand-navy">
-                <Play className="ml-1 h-6 w-6 fill-current" aria-hidden />
-              </span>
-            </button>
             {!reducedMotion && videoReady && (
               <button
                 type="button"
@@ -122,14 +108,10 @@ export default function HeroVideoSection() {
         </div>
 
         <div className="flex flex-col px-5 pt-10 sm:px-8 md:px-10 md:pt-0 lg:px-14">
-          <div className="hero-rise" style={rise(0)}>
-            <IhgUniversityLogo className="h-6 w-auto md:h-7" />
-          </div>
-
           <div className="flex flex-1 flex-col justify-center py-8 md:py-10">
             <h1
               className="hero-rise max-w-2xl text-balance text-[2rem] font-light leading-[1.12] md:text-[2.6rem] lg:text-5xl"
-              style={rise(120)}
+              style={rise(0)}
             >
               {lines.map((line) => (
                 <span key={line} className="block">
@@ -139,12 +121,12 @@ export default function HeroVideoSection() {
             </h1>
             <p
               className="hero-rise mt-6 max-w-lg text-pretty text-sm leading-relaxed text-white/85 md:text-base"
-              style={rise(240)}
+              style={rise(120)}
             >
               {strapline.intro}
             </p>
 
-            <div className="hero-rise mt-9" style={rise(360)}>
+            <div className="hero-rise mt-9" style={rise(240)}>
               <WatchFilmButton label={t("hero.watchFilm")} onClick={openFilm} />
             </div>
           </div>
