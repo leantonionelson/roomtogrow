@@ -145,6 +145,23 @@ export const es: ContentTranslation = {
         "La confianza para dirigir un hotel equilibrando prioridades comerciales, de personas y de marca, con un impacto a nivel de empresa.",
     },
     hospitality_diploma_3: {
+      conversation: {
+        commitments: [
+          "Seis módulos virtuales en directo, con tiempo entre cada uno para poner en práctica lo aprendido",
+          "Entre uno y dos meses por módulo, compaginándolo con tu trabajo diario",
+          "Un equipo a tu cargo, para aplicar cada módulo desde el primer momento",
+        ],
+        asks: [
+          "Tiempo para asistir a las sesiones en directo y practicar entre módulos",
+          "Oportunidades de usar tus nuevas habilidades con tu equipo, como el coaching o la fijación de objetivos",
+          "Una reunión periódica para hablar de lo que estás aplicando y de cómo va",
+        ],
+        questions: [
+          "¿Crees que estoy preparado/a y que el momento es bueno para el equipo?",
+          "¿En qué fortalezas y áreas de mejora debería centrarme?",
+          "¿Dónde podría aplicar cada módulo en mi puesto?",
+        ],
+      },
       description:
         "Un programa acreditado de formación combinada, con seis módulos virtuales en directo, que conduce a una cualificación reconocida internacionalmente.",
       suggestionLine:
@@ -177,6 +194,23 @@ export const es: ContentTranslation = {
       quoteAuthor: "Supervisora de pisos, Holiday Inn, Dubái",
     },
     hospitality_diploma_4: {
+      conversation: {
+        commitments: [
+          "Seis módulos virtuales en directo, cada uno con una sesión dirigida por un formador",
+          "Una parte de tu ensayo del Diploma por cada módulo, y las seis se entregan juntas para su evaluación",
+          "Aplicar tus nuevas habilidades en tu día a día, donde tu manager necesita verlas",
+        ],
+        asks: [
+          "Tiempo reservado para las sesiones en directo y para redactar tu ensayo",
+          "Retos reales de tu equipo a los que aplicar cada módulo",
+          "Comentarios periódicos sobre cómo estás aplicando tus nuevas habilidades",
+        ],
+        questions: [
+          "¿Crees que estoy preparado/a y que el momento es bueno para el equipo?",
+          "¿A qué retos de nuestro hotel podría aplicar cada módulo?",
+          "¿Cómo podría ayudarme esto a prepararme para un puesto de gerente sénior?",
+        ],
+      },
       description:
         "Una cualificación acreditada de formación combinada, con seis módulos virtuales en directo, que lleva a los gerentes a profundizar en las capacidades de liderazgo que impulsan el rendimiento del hotel.",
       suggestionLine:
@@ -209,6 +243,23 @@ export const es: ContentTranslation = {
       quoteAuthor: "Duty Manager, Crowne Plaza, aeropuerto de Changi, Singapur",
     },
     hospitality_diploma_5: {
+      conversation: {
+        commitments: [
+          "Haber completado Journey to Senior Manager antes de empezar",
+          "Aplicar lo que aprendes en tiempo real en tu puesto",
+          "Estar dispuesto/a a asumir retos y a ampliar tu forma de liderar",
+        ],
+        asks: [
+          "Su apoyo para priorizar este desarrollo junto a tu trabajo",
+          "Un acuerdo sobre cómo encaja en tu plan de desarrollo personal",
+          "Claridad sobre el impacto en el negocio que se espera de ti en los próximos 12–24 meses",
+        ],
+        questions: [
+          "¿Desarrolla esto las capacidades que hemos identificado para mi siguiente paso?",
+          "¿Qué impacto debería conseguir en los próximos 12–24 meses?",
+          "¿Me estoy preparando para un puesto de director general o equivalente, y cómo me ayudará esto en mi puesto actual?",
+        ],
+      },
       description:
         "Un programa de formación acreditado que capacita a los líderes sénior de la hostelería para dirigir operaciones hoteleras complejas e impulsar un rendimiento sostenido del negocio.",
       suggestionLine:

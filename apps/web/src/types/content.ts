@@ -95,6 +95,8 @@ export interface Programme {
   recommendation?: string;
   /** Diplomas: questions shown under "Talk to your manager". */
   faqs: ProgrammeFaq[];
+  /** Diplomas: prep for the manager conversation, from the course requirements. */
+  conversation?: ConversationPrep;
   quote?: string;
   quoteAuthor?: string;
   /** "Read more" link under the testimonial. */
@@ -179,12 +181,22 @@ export interface ActivePathState {
   fallbackConnectorIds: string[];
 }
 
-/** Deterministic "development case" copy for manager conversations. */
-export interface DevelopmentCase {
-  currentPosition: string;
-  nextStep: string;
-  whyFits: string;
-  whatYouGain: string[];
+/**
+ * Manager-conversation prep for a Diploma, drawn from what the course asks
+ * of the learner (format, time, assessment, prerequisites).
+ */
+export interface ConversationPrep {
+  /** What the programme asks of you. */
+  commitments: string[];
+  /** What to ask your manager for. */
+  asks: string[];
+  /** Questions to bring. */
+  questions: string[];
+}
+
+/** A visitor's conversation plan: a personal opening line plus the prep. */
+export interface ConversationPlan extends ConversationPrep {
+  opener: string;
 }
 
 /**

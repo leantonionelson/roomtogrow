@@ -145,6 +145,23 @@ export const fr: ContentTranslation = {
         "La confiance nécessaire pour diriger un hôtel en conciliant priorités commerciales, humaines et de marque, avec un impact à l’échelle de l’entreprise.",
     },
     hospitality_diploma_3: {
+      conversation: {
+        commitments: [
+          "Six modules virtuels en direct, avec du temps entre chacun pour mettre en pratique ce que vous avez appris",
+          "Environ un à deux mois par module, en parallèle de votre poste",
+          "Une équipe à encadrer, pour appliquer chaque module sans attendre",
+        ],
+        asks: [
+          "Du temps pour suivre les sessions en direct et pratiquer entre les modules",
+          "Des occasions d’utiliser vos nouvelles compétences avec votre équipe, comme le coaching ou la définition d’objectifs",
+          "Un point régulier pour parler de ce que vous appliquez et de la façon dont cela se passe",
+        ],
+        questions: [
+          "Pensez-vous que je suis prêt(e), et le calendrier convient-il à notre équipe ?",
+          "Sur quels points forts et axes de progrès devrais-je me concentrer ?",
+          "Où pourrais-je appliquer chaque module dans mon poste ?",
+        ],
+      },
       description:
         "Un programme accrédité en formation mixte, composé de six modules virtuels en direct, menant à une qualification reconnue à l’international.",
       suggestionLine:
@@ -177,6 +194,23 @@ export const fr: ContentTranslation = {
       quoteAuthor: "Superviseure Housekeeping, Holiday Inn, Dubaï",
     },
     hospitality_diploma_4: {
+      conversation: {
+        commitments: [
+          "Six modules virtuels en direct, chacun avec une session animée par un formateur",
+          "Une partie de votre mémoire de Diploma pour chaque module, les six parties étant remises ensemble pour évaluation",
+          "L’application de vos nouvelles compétences au quotidien, où votre manager doit pouvoir les constater",
+        ],
+        asks: [
+          "Du temps protégé pour les sessions en direct et la rédaction de votre mémoire",
+          "Des défis concrets au sein de votre équipe auxquels appliquer chaque module",
+          "Des retours réguliers sur la façon dont vous appliquez vos nouvelles compétences",
+        ],
+        questions: [
+          "Pensez-vous que je suis prêt(e), et le calendrier convient-il à notre équipe ?",
+          "À quels défis de notre hôtel pourrais-je appliquer chaque module ?",
+          "Comment ce programme pourrait-il m’aider à me préparer à un poste de cadre supérieur ?",
+        ],
+      },
       description:
         "Une qualification accréditée en formation mixte, composée de six modules virtuels en direct, qui permet aux managers d’approfondir les capacités de leadership qui font la performance d’un hôtel.",
       suggestionLine:
@@ -209,6 +243,23 @@ export const fr: ContentTranslation = {
       quoteAuthor: "Duty Manager, Crowne Plaza, aéroport de Changi, Singapour",
     },
     hospitality_diploma_5: {
+      conversation: {
+        commitments: [
+          "Avoir suivi Journey to Senior Manager avant de commencer",
+          "Appliquer vos apprentissages en temps réel dans votre poste",
+          "Être prêt(e) à être challengé(e) et à faire évoluer votre façon de diriger",
+        ],
+        asks: [
+          "Son soutien pour faire de ce développement une priorité en parallèle de votre poste",
+          "Un accord sur la place de ce programme dans votre plan de développement personnel",
+          "Une vision claire de l’impact attendu de vous sur l’activité au cours des 12 à 24 prochains mois",
+        ],
+        questions: [
+          "Ce programme développe-t-il les compétences que nous avons identifiées pour ma prochaine étape ?",
+          "Quel impact devrais-je avoir au cours des 12 à 24 prochains mois ?",
+          "Est-ce que je me prépare à un poste de directeur général ou équivalent, et en quoi ce programme m’aidera-t-il dans mon poste actuel ?",
+        ],
+      },
       description:
         "Un programme de formation accrédité permettant aux cadres dirigeants de l’hôtellerie de piloter des opérations hôtelières complexes et de générer une performance durable.",
       suggestionLine:

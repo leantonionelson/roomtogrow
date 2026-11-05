@@ -1,4 +1,5 @@
 import type {
+  ConversationPrep,
   IntentValue,
   IntroBlock,
   ProgrammeFaq,
@@ -48,6 +49,7 @@ export interface ContentTranslation {
       quote?: string;
       quoteAuthor?: string;
       resources?: ResourceText[];
+      conversation?: ConversationPrep;
     }
   >;
   faqs: Record<string, { question: string; answer: string }>;

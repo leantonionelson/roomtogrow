@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/accordion";
 import PanelShell, { heroForId } from "./PanelShell";
 import type {
-  DevelopmentCase,
+  ConversationPlan,
   LearningResource,
   NodeType,
   Programme,
@@ -24,7 +24,7 @@ import type { MapInteractionState, NavigatorUserContext } from "../types/ui";
 import type { PathAiFocus } from "../data/pathAi";
 import { useContentLookup, useSiteContent, useT } from "../content/ContentProvider";
 import {
-  buildDevelopmentCase,
+  buildConversationPlan,
   getCoreJourneyForRole,
   getDiplomaForRole,
 } from "../data/contentModel";
@@ -311,32 +311,25 @@ function quoteExcerpt(
   return `${(lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trim()}…`;
 }
 
-function DevelopmentCaseBlock({
-  developmentCase,
-}: {
-  developmentCase: DevelopmentCase;
-}) {
+function ConversationPlanBlock({ plan }: { plan: ConversationPlan }) {
   const t = useT();
+  const list = (items: string[]) => (
+    <ul className="list-outside list-disc space-y-1 ps-4">
+      {items.map((line) => (
+        <li key={line}>{line}</li>
+      ))}
+    </ul>
+  );
   return (
     <div id="ai-output" className="mt-4 border-t border-orange-200/80 pt-4">
       <p className="text-sm font-semibold text-foreground">{t("panel.caseTitle")}</p>
       <div className="mt-3 space-y-4 text-sm text-foreground">
-        <InfoSection label={t("panel.caseCurrent")}>
-          {developmentCase.currentPosition}
+        <InfoSection label={t("panel.caseOpener")}>
+          <p className="border-s-2 border-orange-700/60 ps-3 italic">{plan.opener}</p>
         </InfoSection>
-        <InfoSection label={t("panel.caseNext")}>
-          {developmentCase.nextStep}
-        </InfoSection>
-        <InfoSection label={t("panel.caseWhy")}>{developmentCase.whyFits}</InfoSection>
-        {developmentCase.whatYouGain.length > 0 && (
-          <InfoSection label={t("panel.gain")}>
-            <ul className="list-inside list-disc space-y-1">
-              {developmentCase.whatYouGain.map((line, i) => (
-                <li key={i}>{line}</li>
-              ))}
-            </ul>
-          </InfoSection>
-        )}
+        <InfoSection label={t("panel.caseCommitments")}>{list(plan.commitments)}</InfoSection>
+        <InfoSection label={t("panel.caseAsks")}>{list(plan.asks)}</InfoSection>
+        <InfoSection label={t("panel.caseQuestions")}>{list(plan.questions)}</InfoSection>
       </div>
     </div>
   );
@@ -480,12 +473,12 @@ function AdvancedProgrammePanel({
   const t = useT();
   const lookup = useContentLookup();
   const [quoteExpanded, setQuoteExpanded] = useState(false);
-  const [developmentCase, setDevelopmentCase] =
-    useState<DevelopmentCase | null>(null);
+  const [conversationPlan, setConversationPlan] =
+    useState<ConversationPlan | null>(null);
 
   useEffect(() => {
     setQuoteExpanded(false);
-    setDevelopmentCase(null);
+    setConversationPlan(null);
   }, [programme.id]);
 
   const fullQuote = programme.quote?.trim() ?? "";
@@ -570,31 +563,31 @@ function AdvancedProgrammePanel({
         </p>
       ) : null}
 
-      <div className="rounded-lg border border-dashed border-orange-700/70 bg-orange-50/50 px-3 py-3">
-        <p className="text-sm font-semibold text-orange-950">
-          {t("panel.talkToManager")}
-        </p>
-        <button
-          type="button"
-          onClick={() =>
-            setDevelopmentCase(
-              buildDevelopmentCase({
-                programme,
-                // Only describe the visitor by a role they chose.
-                currentRoleId: userContext?.roleInferred ? null : userContext?.currentRoleId,
-                t,
-                roleLabel: (id) => lookup.role(id)?.label ?? id,
-              }),
-            )
-          }
-          className="mt-3 w-full rounded border border-orange-700 bg-orange-700 px-3 py-2 text-sm font-medium text-white hover:bg-orange-800"
-        >
-          {t("panel.prepareConversation")}
-        </button>
-        {developmentCase ? (
-          <DevelopmentCaseBlock developmentCase={developmentCase} />
-        ) : null}
-      </div>
+      {programme.conversation ? (
+        <div className="rounded-lg border border-dashed border-orange-700/70 bg-orange-50/50 px-3 py-3">
+          <p className="text-sm font-semibold text-orange-950">
+            {t("panel.talkToManager")}
+          </p>
+          <button
+            type="button"
+            onClick={() =>
+              setConversationPlan(
+                buildConversationPlan({
+                  programme,
+                  // Only describe the visitor by a role they chose.
+                  currentRoleId: userContext?.roleInferred ? null : userContext?.currentRoleId,
+                  t,
+                  roleLabel: (id) => lookup.role(id)?.label ?? id,
+                }),
+              )
+            }
+            className="mt-3 w-full rounded border border-orange-700 bg-orange-700 px-3 py-2 text-sm font-medium text-white hover:bg-orange-800"
+          >
+            {t("panel.prepareConversation")}
+          </button>
+          {conversationPlan ? <ConversationPlanBlock plan={conversationPlan} /> : null}
+        </div>
+      ) : null}
 
       {programme.faqs.length > 0 ? (
         <Accordion type="single" collapsible className="gap-2">

@@ -7,7 +7,7 @@
 import type {
   ActivePathState,
   ConnectorType,
-  DevelopmentCase,
+  ConversationPlan,
   Faq,
   IntentSelectorContent,
   IntroBlock,
@@ -342,6 +342,23 @@ export const programmes: Programme[] = [
     quote:
       "This programme completely changed how I approach conversations with my team. I now have real tools, not just instincts.",
     quoteAuthor: "Housekeeping Supervisor, Holiday Inn, Dubai",
+    conversation: {
+      commitments: [
+        "Six live virtual modules, with time between each to practise what you've learned",
+        "Around one to two months per module, alongside your day-to-day role",
+        "A team to lead, so you can apply each module straight away",
+      ],
+      asks: [
+        "Time to join the live sessions and to practise between modules",
+        "Chances to use new skills with your team, such as coaching or setting goals",
+        "A regular check-in to talk about what you're applying and how it's going",
+      ],
+      questions: [
+        "Do you think I'm ready, and does the timing work for our team?",
+        "Which of my strengths and gaps should I focus on?",
+        "Where could I apply each module in my role?",
+      ],
+    },
     relatedProgrammeIds: ["journey_supervisor", "hospitality_diploma_3"],
     resources: [],
   },
@@ -383,6 +400,23 @@ export const programmes: Programme[] = [
     quote:
       "The Diploma gave me a framework for everything I was already doing intuitively. I came away a more confident, more deliberate leader.",
     quoteAuthor: "Duty Manager, Crowne Plaza, Changi Airport Singapore",
+    conversation: {
+      commitments: [
+        "Six live virtual modules, each with an instructor-led session",
+        "A section of your Diploma essay for each module, with all six submitted together for marking",
+        "Applying your new skills in your day-to-day role, where your manager needs to see them",
+      ],
+      asks: [
+        "Protected time for the live sessions and your essay writing",
+        "Real challenges in your team that you can apply each module to",
+        "Regular feedback on how you're applying your new skills",
+      ],
+      questions: [
+        "Do you think I'm ready, and does the timing work for our team?",
+        "Which challenges in our hotel could I apply each module to?",
+        "How could this help me prepare for a step up to senior management?",
+      ],
+    },
     relatedProgrammeIds: ["journey_manager", "hospitality_diploma_4"],
     resources: [],
   },
@@ -422,6 +456,23 @@ export const programmes: Programme[] = [
     quote:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     quoteAuthor: "Lorem Ipsum, Hotel Name, City",
+    conversation: {
+      commitments: [
+        "Completing Journey to Senior Manager before you start",
+        "Applying your learning in real time in your role",
+        "Being ready to be challenged and to stretch how you lead",
+      ],
+      asks: [
+        "Their support to prioritise this development alongside your role",
+        "Agreement on how it fits your personal development plan",
+        "Clarity on the business impact you're expected to deliver over the next 12–24 months",
+      ],
+      questions: [
+        "Does this build the capabilities we've identified for my next step?",
+        "What impact should I be delivering over the next 12–24 months?",
+        "Am I preparing for a General Manager or equivalent role, and how will this help me in my current one?",
+      ],
+    },
     relatedProgrammeIds: ["journey_senior_manager", "hospitality_diploma_5"],
     resources: [],
   },
@@ -849,12 +900,12 @@ export function getDestinationRoleForProgramme(
 }
 
 /**
- * Deterministic “development case” copy for manager conversations (advanced
- * programmes). Uses only the content model; sentences come from the UI
- * string tables (`t`) and role names from the active locale (`roleLabel`),
- * so it reads in the visitor's language.
+ * The manager-conversation plan for a Diploma: a personal opening line plus
+ * the programme's prep (what it asks of you, what to ask for, questions to
+ * bring). Sentences come from the UI string tables (`t`) and role names from
+ * the active locale (`roleLabel`), so it reads in the visitor's language.
  */
-export function buildDevelopmentCase({
+export function buildConversationPlan({
   programme,
   currentRoleId,
   t,
@@ -865,8 +916,8 @@ export function buildDevelopmentCase({
   t: Translate;
   /** Role name in the active locale. */
   roleLabel: (roleId: string) => string;
-}): DevelopmentCase | null {
-  if (!programme) return null;
+}): ConversationPlan | null {
+  if (!programme?.conversation) return null;
 
   const currentRole = currentRoleId ? getRoleById(currentRoleId) : null;
   // The programme's own destination, not the role after the user's: a
@@ -875,43 +926,21 @@ export function buildDevelopmentCase({
     getDestinationRoleForProgramme(programme.id) ??
     (currentRoleId ? getNextRoleById(currentRoleId) : null);
   const next = nextRole ? roleLabel(nextRole.id) : t("case.nextFallback");
-  const current = currentRole ? roleLabel(currentRole.id) : "";
+  const title = programme.title;
 
-  const audience = programme.whoItsFor?.trim().replace(/[.\s]+$/, "");
-  const designedFor = audience
-    ? t("case.designedFor", { title: programme.title, audience })
-    : programme.title;
-  const whatYouGain = programme.outcomes?.trim()
-    ? [programme.outcomes.trim()]
-    : [];
-
-  // Already at or past the step this programme prepares for (e.g. a Manager
-  // reading about the Foundational Diploma): point them at their team.
+  let opener: string;
   if (currentRole && nextRole && currentRole.level >= nextRole.level) {
-    return {
-      currentPosition: t("case.currentTaken", { current }),
-      nextStep: t("case.nextTaken", { next }),
-      whyFits: designedFor,
-      whatYouGain,
-    };
+    // Already at or past the step this programme prepares for (e.g. a
+    // Manager reading about the Foundational Diploma): it's for their team.
+    opener = t("case.openerTaken", { next });
+  } else if (currentRole) {
+    opener = t("case.openerAhead", { current: roleLabel(currentRole.id), next, title });
+  } else {
+    // No role chosen: don't guess one.
+    opener = t("case.openerNone", { next, title });
   }
 
-  // No role chosen: don't guess one; describe the destination only.
-  if (!currentRole) {
-    return {
-      currentPosition: t("case.currentNone", { next }),
-      nextStep: t("case.nextNone", { next }),
-      whyFits: t("case.whyNone", { designedFor, next }),
-      whatYouGain,
-    };
-  }
-
-  return {
-    currentPosition: t("case.currentAhead", { current, next }),
-    nextStep: t("case.nextAhead", { next }),
-    whyFits: t("case.whyAhead", { designedFor, current, next }),
-    whatYouGain,
-  };
+  return { opener, ...programme.conversation };
 }
 
 /** First sentence (up to “. ”) for short role overview copy. */
