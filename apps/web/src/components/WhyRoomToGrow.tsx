@@ -13,16 +13,19 @@ import { Reveal } from "./motion";
 import lounge from "../assets/brand/portraits/lounge.jpg";
 import reception from "../assets/brand/portraits/reception.jpg";
 import meeting from "../assets/brand/portraits/meeting.jpg";
-import bar from "../assets/brand/portraits/bar.jpg";
-import housekeeping from "../assets/brand/portraits/housekeeping.jpg";
+import teamMeeting from "../assets/brand/portraits/team-meeting.jpg";
+import lobbyWalk from "../assets/brand/portraits/lobby-walk.jpg";
 
-/** One portrait per selling point; `focus` keeps the face in a narrow crop. */
-const PANELS = [
-  { src: lounge, focus: "32% 40%" },
+/**
+ * One portrait per selling point; `focus` keeps a face in a narrow crop.
+ * `openFocus`, where a group shot needs it, reframes as the panel opens up.
+ */
+const PANELS: { src: string; focus: string; openFocus?: string }[] = [
+  { src: lounge, focus: "44% 30%" },
   { src: reception, focus: "38% 30%" },
   { src: meeting, focus: "42% 35%" },
-  { src: bar, focus: "52% 30%" },
-  { src: housekeeping, focus: "40% 35%" },
+  { src: teamMeeting, focus: "37% 30%", openFocus: "44% 30%" },
+  { src: lobbyWalk, focus: "34% 20%" },
 ];
 
 /** Track progress where the split starts and where the panels have opened. */
@@ -159,8 +162,14 @@ function SplitStage({
           <PanelImage
             panel={PANELS[i]}
             // The opening frame shows the whole scene; the face crop takes
-            // over as the panel narrows.
-            focus={i === 0 ? mixFocus("50% 45%", PANELS[0].focus, split) : undefined}
+            // over as the panel narrows. Incoming panels open from their
+            // face crop to their open framing.
+            focus={
+              i === 0
+                ? mixFocus("50% 45%", PANELS[0].focus, split)
+                : PANELS[i].openFocus &&
+                  mixFocus(PANELS[i].focus, PANELS[i].openFocus, unfolded)
+            }
             style={{ transform: `scale(${zoom})` }}
           />
           <Caption title={point.title} body={point.body} visible={captions > 0} opacity={captions} />
