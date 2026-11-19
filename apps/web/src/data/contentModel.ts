@@ -340,8 +340,8 @@ export const programmes: Programme[] = [
       },
     ],
     quote:
-      "This programme completely changed how I approach conversations with my team. I now have real tools, not just instincts.",
-    quoteAuthor: "Housekeeping Supervisor, Holiday Inn, Dubai",
+      "Through IHG FDHL, I realized that leadership is about more than driving results. It is about developing people, navigating change with confidence, and building an agile team that can thrive in a fast-paced hotel environment.",
+    quoteAuthor: "Nguyen Thi Hong Mai, Assistant Sales Manager, InterContinental Hanoi Westlake",
     conversation: {
       commitments: [
         "Six live virtual modules, with time between each to practise what you've learned",
@@ -398,8 +398,8 @@ export const programmes: Programme[] = [
       },
     ],
     quote:
-      "The Diploma gave me a framework for everything I was already doing intuitively. I came away a more confident, more deliberate leader.",
-    quoteAuthor: "Duty Manager, Crowne Plaza, Changi Airport Singapore",
+      "The DHL has strengthened my leadership capabilities, broadened my perspective and given me practical tools I can apply in my role. It has helped me become more confident in leading my team and continue investing in my future growth.",
+    quoteAuthor: "Siti Triyani, Assistant Executive Housekeeper, Holiday Inn & Suites Jakarta Gajah Mada",
     conversation: {
       commitments: [
         "Six live virtual modules, each with an instructor-led session",
@@ -452,10 +452,7 @@ export const programmes: Programme[] = [
           "Use this as an opportunity to clarify the broader business impact you are expected to deliver over the next 12-24 months. You may also want to consider whether you are preparing for a General Manager or equivalent senior leadership role, and how this programme will help you perform more effectively in your current role.",
       },
     ],
-    // Placeholder testimonial: to be supplied by IHG.
-    quote:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    quoteAuthor: "Lorem Ipsum, Hotel Name, City",
+    // No testimonial until the programme has launched.
     conversation: {
       commitments: [
         "Completing Journey to Senior Manager before you start",
@@ -513,7 +510,7 @@ export const faqs: Faq[] = [
     id: "journey_free",
     question: "Are the Journey to... programmes really free?",
     answer:
-      "Yes. All our Journey to... programmes are included in your IHG core learning package.",
+      "All our Journey to... programmes are included in your IHG core learning package.",
   },
   {
     id: "journey_vs_diploma",

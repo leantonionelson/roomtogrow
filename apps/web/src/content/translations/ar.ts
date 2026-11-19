@@ -181,8 +181,7 @@ export const ar: ContentTranslation = {
         },
       ],
       quote:
-        "غيّر هذا البرنامج تمامًا طريقتي في إدارة الحوارات مع فريقي. أصبحت لديّ أدوات حقيقية، لا مجرد حدس.",
-      quoteAuthor: "مشرفة التدبير الفندقي، Holiday Inn، دبي",
+        "من خلال برنامج IHG FDHL، أدركت أن القيادة تتجاوز تحقيق النتائج؛ فهي تعني تطوير الأفراد، والتعامل مع التغيير بثقة، وبناء فريق مرن قادر على النجاح في بيئة فندقية سريعة الإيقاع.",
     },
     hospitality_diploma_4: {
       conversation: {
@@ -229,8 +228,7 @@ export const ar: ContentTranslation = {
         },
       ],
       quote:
-        "منحني Diploma إطارًا لكل ما كنت أفعله بالفطرة. خرجت منه قائدًا أكثر ثقة ووعيًا.",
-      quoteAuthor: "مدير مناوب، Crowne Plaza، مطار شانغي، سنغافورة",
+        "عزّز برنامج DHL قدراتي القيادية، ووسّع آفاقي، ومنحني أدوات عملية يمكنني تطبيقها في عملي. كما ساعدني على قيادة فريقي بثقة أكبر ومواصلة الاستثمار في نموي المستقبلي.",
     },
     hospitality_diploma_5: {
       conversation: {
@@ -281,7 +279,7 @@ export const ar: ContentTranslation = {
   faqs: {
     journey_free: {
       question: "هل برامج Journey to… مجانية حقًا؟",
-      answer: "نعم. جميع برامج Journey to… مشمولة في باقة التعلّم الأساسية من IHG.",
+      answer: "جميع برامج Journey to… مشمولة في باقة التعلّم الأساسية من IHG.",
     },
     journey_vs_diploma: {
       question: "ما الفرق بين برامج Journey to… وبرامج Diploma؟",

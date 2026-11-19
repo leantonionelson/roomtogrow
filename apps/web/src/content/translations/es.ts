@@ -190,8 +190,7 @@ export const es: ContentTranslation = {
         },
       ],
       quote:
-        "Este programa cambió por completo mi forma de afrontar las conversaciones con mi equipo. Ahora tengo herramientas reales, no solo intuición.",
-      quoteAuthor: "Supervisora de pisos, Holiday Inn, Dubái",
+        "Gracias al programa IHG FDHL, me di cuenta de que el liderazgo va más allá de conseguir resultados. Se trata de desarrollar a las personas, afrontar el cambio con confianza y construir un equipo ágil capaz de prosperar en el ritmo acelerado de un hotel.",
     },
     hospitality_diploma_4: {
       conversation: {
@@ -239,8 +238,7 @@ export const es: ContentTranslation = {
         },
       ],
       quote:
-        "El Diploma me dio un marco para todo lo que ya hacía de forma intuitiva. Salí siendo un líder más seguro y más reflexivo.",
-      quoteAuthor: "Duty Manager, Crowne Plaza, aeropuerto de Changi, Singapur",
+        "El DHL ha fortalecido mis capacidades de liderazgo, ha ampliado mi perspectiva y me ha dado herramientas prácticas que puedo aplicar en mi puesto. Me ha ayudado a liderar a mi equipo con más confianza y a seguir invirtiendo en mi crecimiento futuro.",
     },
     hospitality_diploma_5: {
       conversation: {
@@ -293,7 +291,7 @@ export const es: ContentTranslation = {
     journey_free: {
       question: "¿Los programas Journey to… son realmente gratuitos?",
       answer:
-        "Sí. Todos nuestros programas Journey to… están incluidos en tu paquete de formación básica de IHG.",
+        "Todos nuestros programas Journey to… están incluidos en tu paquete de formación básica de IHG.",
     },
     journey_vs_diploma: {
       question: "¿Qué diferencia hay entre los programas Journey to… y los Diplomas?",
