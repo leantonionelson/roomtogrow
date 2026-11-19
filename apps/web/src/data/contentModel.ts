@@ -340,7 +340,7 @@ export const programmes: Programme[] = [
       },
     ],
     quote:
-      "Through IHG FDHL, I realized that leadership is about more than driving results. It is about developing people, navigating change with confidence, and building an agile team that can thrive in a fast-paced hotel environment.",
+      "Through IHG FDHL, I realised that leadership is about more than driving results. It is about developing people, navigating change with confidence, and building an agile team that can thrive in a fast-paced hotel environment.",
     quoteAuthor: "Nguyen Thi Hong Mai, Assistant Sales Manager, InterContinental Hanoi Westlake",
     conversation: {
       commitments: [
