@@ -12,4 +12,5 @@ const VIDEO_BASE =
     : `${import.meta.env.BASE_URL}video/`;
 
 export const FILM_SRC = `${VIDEO_BASE}room-to-grow-film.mp4`;
-export const LOOP_SRC = `${VIDEO_BASE}room-to-grow-loop.mp4`;
+// Versioned name, so caches never hold on to an earlier cut.
+export const LOOP_SRC = `${VIDEO_BASE}room-to-grow-loop-v3.mp4`;

@@ -15,3 +15,11 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# The hero loop's filename is versioned. Earlier builds (including intranet
+# embeds already handed over) still ask for the old name, so send them to
+# the current cut.
+[[redirects]]
+  from = "/video/room-to-grow-loop.mp4"
+  to = "/video/room-to-grow-loop-v3.mp4"
+  status = 301
